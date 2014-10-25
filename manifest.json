@@ -1,0 +1,19 @@
+{
+	"manifest_version": 2,
+
+	"name": "Jira Cycle Time",
+	"description": "Epic cycle time reporting for Jira.",
+	"version":  "0.0",
+
+	"permissions": [
+		"https://*/",
+		"storage"
+	],
+
+	"content_scripts": [
+		{
+		  "matches": ["https://*/secure/RapidBoard.jspa?*", "https://*/secure*.jspa"],
+			"js": ["main.js"]
+		}
+	]
+}
