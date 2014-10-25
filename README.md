@@ -1,12 +1,12 @@
-# grunt-jasmine-example
-[![Build Status](https://travis-ci.org/jbrunton/grunt-jasmine-example.png)](https://travis-ci.org/jbrunton/grunt-jasmine-example)
-[![Code Climate](https://codeclimate.com/github/jbrunton/grunt-jasmine-example.png)](https://codeclimate.com/github/jbrunton/grunt-jasmine-example)
+# jira-cycle-time
+[![Build Status](https://travis-ci.org/jbrunton/jira-cycle-time.png)](https://travis-ci.org/jbrunton/jira-cycle-time)
+[![Code Climate](https://codeclimate.com/github/jbrunton/jira-cycle-time.png)](https://codeclimate.com/github/jbrunton/jira-cycle-time)
 
-A small example of how to use Grunt, Jasmine and Browserify to create an environment suitable for test-driving JavaScript modules.
+A Chrome extension for reporting over cycle time in Jira at the Epic level.
 
-## Getting Started
+## Getting started
 
-1. [Download the project](https://github.com/jbrunton/grunt-jasmine-example/archive/master.zip) and extract the contents.
+1. Clone the project with ```git clone https://github.com/jbrunton/jira-cycle-time.git```
 2. Run ```npm install``` to install any dependencies.
 3. If you don't have it set up, run ```npm install -g grunt-cli``` to install Grunt.
 4. You're good to go.  Run ```grunt test``` to run the specs, and ```grunt build``` to generate a concatenated release build at ```build/main.js```.
@@ -27,4 +27,4 @@ The Gruntfile configures Browserify to generate source maps for test builds, so 
 
 ### Continuous integration
 
-The project includes a ```.travis.yml``` file, which tells Travis how to install the necessary dependencies.  Travis recognises the package.json file and runs the ```test``` script in that (which just runs ```grunt test```).  You can see the Travis project [here](https://travis-ci.org/jbrunton/grunt-jasmine-example).
+The project includes a ```.travis.yml``` file, which tells Travis how to install the necessary dependencies.  Travis recognises the package.json file and runs the ```test``` script in that (which just runs ```grunt test```).  You can see the Travis project [here](https://travis-ci.org/jbrunton/jira-cycle-time).
