@@ -13,20 +13,16 @@ function ChartMenu(opts) {
 }
 
 ChartMenu.prototype.bind = function(target) {
-  // this._target = target;
-  
-  var jiraChartNav = $(target).find('#ghx-chart-nav');
-  if (jiraChartNav.size()) {
+  if (chartNavExists(target)) {
     this.inflate(target);
   } else {
-    var domNodeInserted = _.bind(function() {
-      var jiraChartNav = $(target).find('#ghx-chart-nav');
-      if (jiraChartNav.size()) {
-        $(target).off('DOMNodeInserted', domNodeInserted);
+    var waitForChartMenu = _.bind(function() {
+      if (chartNavExists(target)) {
+        $(target).off('DOMNodeInserted', waitForChartMenu);
         this.inflate(target);
       }      
     }, this);
-    $(target).on('DOMNodeInserted', domNodeInserted);
+    $(target).on('DOMNodeInserted', waitForChartMenu);
   }
 }
 
@@ -35,10 +31,18 @@ ChartMenu.prototype.inflate = function(target) {
     return $("<li id='" + chart.menuItemId + "' original-title=''><a href='#'>" + chart.title + "</a></li>");
   }
   
-  var jiraChartNav = $(target).find('#ghx-chart-nav');
+  var jiraChartNav = findChartNav(target);
   _(this.charts).each(function(chart) {
     createMenuItem(chart).appendTo(jiraChartNav);
   });
+}
+
+function chartNavExists(target) {
+  return findChartNav(target).size() > 0;
+}
+
+function findChartNav(target) {
+  return $(target).find('#ghx-chart-nav');
 }
 
 module.exports = ChartMenu;
