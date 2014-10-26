@@ -41,8 +41,18 @@ describe ('ChartMenu', function() {
   
   describe ("#bind", function() {
     it ("appends its charts to the DOM", function() {
-      var dom = $("<div><ul id='ghx-chart-nav'><li id='jira-chart'></li></ul></div>").get(0);
+      var dom = createDom()
+        .append(createJiraChart());
       chartMenu.bind(dom);
+      expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+    });
+    
+    it ("appends its charts to the DOM if the DOM is updated", function() {
+      var dom = createDom();
+      chartMenu.bind(dom);
+
+      dom.append(createJiraChart());
+
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
   });
@@ -51,6 +61,14 @@ describe ('ChartMenu', function() {
     return _($(target).find('#ghx-chart-nav li').toArray()).map(function(el) {
       return el.id;
     }).value();
+  }
+  
+  function createDom() {
+    return jasmine.getFixtures().set("<div>");
+  }
+  
+  function createJiraChart() {
+    return $("<ul id='ghx-chart-nav'><li id='jira-chart'></li></ul>");
   }
   
 });
