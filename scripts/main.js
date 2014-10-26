@@ -12,5 +12,5 @@ $(function() {
 	var chartMenu = new ChartMenu({
 	  charts: [chart]
 	})
-  chartMenu.bind($("body"));
+  // chartMenu.bind($("body"));
 });
