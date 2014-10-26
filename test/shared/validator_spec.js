@@ -3,7 +3,7 @@ var Validator = require('../../scripts/shared/validator');
 describe ('Validator', function() {
   var validator;
   
-  beforeEach(function() {
+  beforeEach (function() {
     validator = new Validator();
   });
   

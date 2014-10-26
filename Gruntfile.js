@@ -31,7 +31,7 @@ module.exports = function(grunt) {
         src: 'test/**/*.js',
         dest: 'build/test.js',
         options: {
-          bundleOptions: {
+          browserifyOptions: {
             debug: true
           }
         }
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['Gruntfile.js', 'manifest.json', 'vendor/**/*.js', 'scripts/**/*.js', 'scripts/**/*.hbs', 'test/**/*.js'],
-        tasks: ['copy', 'browserify:debug', 'browserify:test', 'jasmine'],
+        tasks: ['copy', 'browserify:debug', 'browserify:test', 'jasmine:test:build'],
         options: {
           spawn: false
         }
