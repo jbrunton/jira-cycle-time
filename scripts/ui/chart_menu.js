@@ -14,26 +14,29 @@ function ChartMenu(opts) {
 
 ChartMenu.prototype.bind = function(target) {
   if (chartNavExists(target)) {
-    this.inflate(target);
+    this.appendMenuItems(target);
   } else {
     var waitForChartMenu = _.bind(function() {
       if (chartNavExists(target)) {
         $(target).off('DOMNodeInserted', waitForChartMenu);
-        this.inflate(target);
+        this.appendMenuItems(target);
       }      
     }, this);
     $(target).on('DOMNodeInserted', waitForChartMenu);
   }
 }
 
-ChartMenu.prototype.inflate = function(target) {
+ChartMenu.prototype.appendMenuItems = function(target) {
+  findChartNav(target).append(this.inflateMenuItems());
+}
+
+ChartMenu.prototype.inflateMenuItems = function() {
   function createMenuItem(chart) {
     return $("<li id='" + chart.menuItemId + "' original-title=''><a href='#'>" + chart.title + "</a></li>");
   }
   
-  var jiraChartNav = findChartNav(target);
-  _(this.charts).each(function(chart) {
-    createMenuItem(chart).appendTo(jiraChartNav);
+  return _.map(this.charts, function(chart) {
+    return createMenuItem(chart);
   });
 }
 
