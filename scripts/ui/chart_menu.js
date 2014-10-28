@@ -1,6 +1,9 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var Validator = require('../shared/validator');
+var menuItemTemplate = require('./templates/menu_item.hbs');
+
+module.exports = ChartMenu;
 
 function ChartMenu(opts) {
   new Validator()
@@ -31,12 +34,8 @@ ChartMenu.prototype.appendMenuItems = function(target) {
 }
 
 ChartMenu.prototype.inflateMenuItems = function() {
-  function createMenuItem(chart) {
-    return $("<li id='" + chart.menuItemId + "' original-title=''><a href='#'>" + chart.title + "</a></li>");
-  }
-  
   return _.map(this.charts, function(chart) {
-    return createMenuItem(chart);
+    return $(menuItemTemplate(chart));
   });
 }
 
@@ -47,5 +46,3 @@ function chartNavExists(target) {
 function findChartNav(target) {
   return $(target).find('#ghx-chart-nav');
 }
-
-module.exports = ChartMenu;

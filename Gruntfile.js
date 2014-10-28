@@ -19,8 +19,11 @@ module.exports = function(grunt) {
 	},
     
     browserify: {
+      options: {
+        transform: ['hbsfy']
+      },
       release: {
-        src: 'scripts/**/*.js',
+        src: ['scripts/**/*.js', 'scripts/**/*.hbs'],
         dest: 'build/main.js'
       },
       debug: {
@@ -40,7 +43,7 @@ module.exports = function(grunt) {
     
     watch: {
       scripts: {
-        files: ['Gruntfile.js', 'manifest.json', 'vendor/**/*.js', 'scripts/**/*.js', 'scripts/**/*.hbs', 'test/**/*.js'],
+        files: ['Gruntfile.js', 'manifest.json', 'vendor/**/*.js', 'scripts/**/*.js', 'scripts/**/*.hbs', 'test/**/*.js', 'scripts/**/*.hbs'],
         tasks: ['copy', 'browserify:debug', 'browserify:test', 'jasmine:test:build'],
         options: {
           spawn: false
