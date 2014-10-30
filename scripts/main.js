@@ -9,8 +9,8 @@ $(function() {
     title: 'Test Chart',
     menuItemId: 'test-chart'
   });
-	var chartMenu = new ChartMenu({
-	  charts: [chart]
-	})
-  // chartMenu.bind($("body"));
+  var chartMenu = new ChartMenu({
+    charts: [chart]
+  })
+  chartMenu.bind($("body"));
 });
