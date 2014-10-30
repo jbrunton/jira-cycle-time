@@ -17,23 +17,23 @@ function ChartMenu(opts) {
 
 ChartMenu.prototype.bind = function(target) {
   if (chartNavExists(target)) {
-    this.appendMenuItems(target);
+    this._appendMenuItems(target);
   } else {
     var waitForChartMenu = _.bind(function() {
       if (chartNavExists(target)) {
         $(target).off('DOMNodeInserted', waitForChartMenu);
-        this.appendMenuItems(target);
+        this._appendMenuItems(target);
       }      
     }, this);
     $(target).on('DOMNodeInserted', waitForChartMenu);
   }
 }
 
-ChartMenu.prototype.appendMenuItems = function(target) {
-  findChartNav(target).append(this.inflateMenuItems());
+ChartMenu.prototype._appendMenuItems = function(target) {
+  findChartNav(target).append(this._inflateMenuItems());
 }
 
-ChartMenu.prototype.inflateMenuItems = function() {
+ChartMenu.prototype._inflateMenuItems = function() {
   return _.map(this.charts, function(chart) {
     return $(menuItemTemplate(chart));
   });
