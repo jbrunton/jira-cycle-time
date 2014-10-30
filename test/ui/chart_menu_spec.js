@@ -40,19 +40,41 @@ describe ('ChartMenu', function() {
   });
   
   describe ("#bind", function() {
-    it ("appends its charts to the DOM", function() {
+    it ("appends its menu items to the DOM", function() {
       var dom = createDom()
         .append(createJiraChart());
       chartMenu.bind(dom);
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
     
-    it ("appends its charts to the DOM if the DOM is updated", function() {
+    it ("appends its menu items to the DOM if the DOM is updated", function() {
       var dom = createDom();
       chartMenu.bind(dom);
 
       dom.append(createJiraChart());
 
+      expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+    });
+	
+    it ("appends its menu items to the DOM if the view mode is changed to Report", function() {
+      // arrange
+      var viewModeButton = createJiraViewModeButton();
+      var dom = createDom()
+        .append(viewModeButton)
+        .append(createJiraChart());
+      
+      chartMenu.bind(dom);
+      // as though the user switched to Plan or Work mode
+      dom.find('#ghx-chart-nav').remove();
+      
+      dom.append(createJiraChart());
+      expect(menuItems(dom)).toEqual(['jira-chart']);
+
+      // act
+      // as though the user swtiched to Report mode again
+      dom.find('.aui-button').click();
+
+      // assert
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
   });
@@ -69,6 +91,10 @@ describe ('ChartMenu', function() {
   
   function createJiraChart() {
     return $("<ul id='ghx-chart-nav'><li id='jira-chart'></li></ul>");
+  }
+  
+  function createJiraViewModeButton() {
+    return $("<div id='ghx-view-modes'><a class='aui-button'>Reporting</a></div>");
   }
   
 });
