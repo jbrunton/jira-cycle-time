@@ -87,7 +87,6 @@ describe ('ChartMenu', function() {
     return jasmine.getFixtures().set("<div><div id='ghx-view-modes'><a id='plan' class='aui-button'>Plan</a><a id='report' class='aui-button'>Report</a></div></div>");
   }
   
-  // TODO: rename to createJiraChartNav()
   function createJiraChartNav() {
     return $("<ul id='ghx-chart-nav'><li id='jira-chart'></li></ul>");
   }
