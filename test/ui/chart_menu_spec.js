@@ -42,7 +42,7 @@ describe ('ChartMenu', function() {
   describe ("#bind", function() {
     it ("appends its menu items to the DOM", function() {
       var dom = createDom()
-        .append(createJiraChart());
+        .append(createJiraChartNav());
       chartMenu.bind(dom);
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
@@ -51,30 +51,28 @@ describe ('ChartMenu', function() {
       var dom = createDom();
       chartMenu.bind(dom);
 
-      dom.append(createJiraChart());
+      dom.append(createJiraChartNav());
 
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
 	
     it ("appends its menu items to the DOM if the view mode is changed to Report", function() {
       // arrange
-      var viewModeButton = createJiraViewModeButton();
       var dom = createDom()
-        .append(viewModeButton)
-        .append(createJiraChart());
+        .append(createJiraChartNav());
       
       chartMenu.bind(dom);
-      // as though the user switched to Plan or Work mode
-      dom.find('#ghx-chart-nav').remove();
-      
-      dom.append(createJiraChart());
-      expect(menuItems(dom)).toEqual(['jira-chart']);
+
+      // switch to the 'Plan' view mode
+      switchToViewMode(dom, 'plan');
+      expect(menuItems(dom)).toEqual([]);
 
       // act
-      // as though the user swtiched to Report mode again
-      dom.find('.aui-button').click();
+      // switch back to the 'Report' view mode
+      switchToViewMode(dom, 'report');
 
       // assert
+      // ensure we've added our custom charts back to the menu
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
     });
   });
@@ -86,15 +84,19 @@ describe ('ChartMenu', function() {
   }
   
   function createDom() {
-    return jasmine.getFixtures().set("<div>");
+    return jasmine.getFixtures().set("<div><div id='ghx-view-modes'><a id='plan' class='aui-button'>Plan</a><a id='report' class='aui-button'>Report</a></div></div>");
   }
   
-  function createJiraChart() {
+  // TODO: rename to createJiraChartNav()
+  function createJiraChartNav() {
     return $("<ul id='ghx-chart-nav'><li id='jira-chart'></li></ul>");
   }
   
-  function createJiraViewModeButton() {
-    return $("<div id='ghx-view-modes'><a class='aui-button'>Reporting</a></div>");
+  function switchToViewMode(dom, buttonId) {
+    dom.find('#ghx-chart-nav').remove();
+    if (buttonId === 'report') {
+      dom.append(createJiraChartNav());
+    }
+    dom.find('#' + buttonId + '.aui-button').click();
   }
-  
 });
