@@ -60,7 +60,6 @@ describe ('ChartMenu', function() {
       // arrange
       var dom = createDom()
         .append(createJiraChartNav());
-      
       chartMenu.bind(dom);
 
       // switch to the 'Plan' view mode
@@ -74,6 +73,17 @@ describe ('ChartMenu', function() {
       // assert
       // ensure we've added our custom charts back to the menu
       expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+    });
+    
+    it ("highlights selected menu items", function() {
+      var dom = createDom()
+        .append(createJiraChartNav);
+      chartMenu.bind(dom);
+      
+      var chartMenuItem = dom.find('#jira-chart');
+      chartMenuItem.click();
+      
+      expect(chartMenuItem).toHaveClass('aui-nav-selected');
     });
   });
   
