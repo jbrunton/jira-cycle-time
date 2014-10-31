@@ -80,7 +80,7 @@ describe ('ChartMenu', function() {
         .append(createJiraChartNav);
       chartMenu.bind(dom);
       
-      var chartMenuItem = dom.find('#jira-chart');
+      var chartMenuItem = dom.find('#custom-chart');
       chartMenuItem.click();
       
       expect(chartMenuItem).toHaveClass('aui-nav-selected');

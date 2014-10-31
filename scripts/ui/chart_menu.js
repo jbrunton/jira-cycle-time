@@ -31,7 +31,15 @@ ChartMenu.prototype.bind = function(target) {
 }
 
 ChartMenu.prototype._appendMenuItems = function() {
-  findChartNav(this._target).append(this._inflateMenuItems());
+  var menuItems = this._inflateMenuItems();
+  _(menuItems).each(function(menuItem) {
+    menuItem.click(function() {
+      var selectedClass = 'aui-nav-selected';
+      var menuItemSelector = '#ghx-chart-nav li';
+      $(this).closest(menuItemSelector).addClass(selectedClass);      
+    });
+  });
+  findChartNav(this._target).append(menuItems);
   this._configureListeners();
 }
 
