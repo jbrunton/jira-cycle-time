@@ -32,12 +32,10 @@ ChartMenu.prototype.bind = function(target) {
 
 ChartMenu.prototype._appendMenuItems = function() {
   var menuItems = this._inflateMenuItems();
-  _(menuItems).each(function(menuItem) {
-    menuItem.click(function() {
-      var selectedClass = 'aui-nav-selected';
-      var menuItemSelector = '#ghx-chart-nav li';
-      $(this).closest(menuItemSelector).addClass(selectedClass);      
-    });
+  menuItems.click(function() {
+    var selectedClass = 'aui-nav-selected';
+    var menuItemSelector = '#ghx-chart-nav li';
+    $(this).closest(menuItemSelector).addClass(selectedClass);      
   });
   findChartNav(this._target).append(menuItems);
   this._configureListeners();
@@ -49,9 +47,11 @@ ChartMenu.prototype._configureListeners = function() {
 }
 
 ChartMenu.prototype._inflateMenuItems = function() {
-  return _.map(this.charts, function(chart) {
-    return $(menuItemTemplate(chart));
+  var menuItems = $();
+  _.each(this.charts, function(chart) {
+    menuItems = menuItems.add($(menuItemTemplate(chart)));
   });
+  return menuItems;
 }
 
 function chartNavExists(target) {
