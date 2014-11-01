@@ -15,6 +15,8 @@ function ChartMenu(opts) {
   _.bindAll(this);
 }
 
+ChartMenu.SELECTED_CLASS = 'aui-nav-selected';
+
 ChartMenu.prototype.bind = function(target) {
   this._target = target;
   if (chartNavExists(this._target)) {
@@ -33,9 +35,9 @@ ChartMenu.prototype.bind = function(target) {
 ChartMenu.prototype._appendMenuItems = function() {
   var menuItems = this._inflateMenuItems();
   menuItems.click(function() {
-    var selectedClass = 'aui-nav-selected';
     var menuItemSelector = '#ghx-chart-nav li';
-    $(this).closest(menuItemSelector).addClass(selectedClass);      
+    $(this).closest('#ghx-chart-nav').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
+    $(this).closest(menuItemSelector).addClass(ChartMenu.SELECTED_CLASS);      
   });
   findChartNav(this._target).append(menuItems);
   this._configureListeners();

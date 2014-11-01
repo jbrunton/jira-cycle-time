@@ -3,20 +3,24 @@ var Chart = require('../../scripts/ui/chart');
 var Validator = require('../../scripts/shared/validator');
 
 describe ('ChartMenu', function() {
-  var chartMenu, chart, validOpts;
+  var dom, chartMenu, chart, validOpts,
+    JIRA_CHART_MENU_ITEM_ID = 'jira-chart',
+    CUSTOM_CHART_MENU_ITEM_ID = 'custom-chart';
   
   
   beforeEach (function() {
     chart = new Chart({
       title: 'Some Chart',
-      menuItemId: 'custom-chart'
+      menuItemId: CUSTOM_CHART_MENU_ITEM_ID
     });
-    // chartMenu = new ChartMenu();
+
     validOpts = {
       charts: [chart]
     };
     
     chartMenu = new ChartMenu(validOpts);
+
+    dom = createDom();
   });
   
   describe ("constructor", function() {
@@ -41,56 +45,56 @@ describe ('ChartMenu', function() {
   
   describe ("#bind", function() {
     it ("appends its menu items to the DOM", function() {
-      var dom = createDom()
-        .append(createJiraChartNav());
+      dom.append(createJiraChartNav());
       chartMenu.bind(dom);
-      expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
     });
     
     it ("appends its menu items to the DOM if the DOM is updated", function() {
-      var dom = createDom();
       chartMenu.bind(dom);
-
       dom.append(createJiraChartNav());
-
-      expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
     });
 	
     it ("appends its menu items to the DOM if the view mode is changed to Report", function() {
       // arrange
-      var dom = createDom()
-        .append(createJiraChartNav());
+      dom.append(createJiraChartNav());
       chartMenu.bind(dom);
 
       // switch to the 'Plan' view mode
-      switchToViewMode(dom, 'plan');
-      expect(menuItems(dom)).toEqual([]);
+      switchToViewMode('plan');
+      expect(menuItems()).toEqual([]);
 
       // act
       // switch back to the 'Report' view mode
-      switchToViewMode(dom, 'report');
+      switchToViewMode('report');
 
       // assert
       // ensure we've added our custom charts back to the menu
-      expect(menuItems(dom)).toEqual(['jira-chart', 'custom-chart']);
+      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
     });
     
     it ("highlights selected menu items", function() {
-      var dom = createDom()
-        .append(createJiraChartNav);
+      dom.append(createJiraChartNav);
       chartMenu.bind(dom);
       
-      var chartMenuItem = dom.find('#custom-chart');
+      var chartMenuItem = findById(CUSTOM_CHART_MENU_ITEM_ID),
+        jiraMenuItem = findById(JIRA_CHART_MENU_ITEM_ID);
       chartMenuItem.click();
       
-      expect(chartMenuItem).toHaveClass('aui-nav-selected');
+      expect(chartMenuItem).toHaveClass(ChartMenu.SELECTED_CLASS);
+      expect(jiraMenuItem).not.toHaveClass(ChartMenu.SELECTED_CLASS);
     });
   });
   
-  function menuItems(target) {
-    return _($(target).find('#ghx-chart-nav li').toArray()).map(function(el) {
+  function menuItems() {
+    return _($(dom).find('#ghx-chart-nav li').toArray()).map(function(el) {
       return el.id;
     }).value();
+  }
+  
+  function findById(id) {
+    return dom.find('#' + id);
   }
   
   function createDom() {
@@ -98,10 +102,10 @@ describe ('ChartMenu', function() {
   }
   
   function createJiraChartNav() {
-    return $("<ul id='ghx-chart-nav'><li id='jira-chart'></li></ul>");
+    return $("<ul id='ghx-chart-nav'><li id='" + JIRA_CHART_MENU_ITEM_ID + "' class='aui-nav-selected'></li></ul>");
   }
   
-  function switchToViewMode(dom, buttonId) {
+  function switchToViewMode(buttonId) {
     dom.find('#ghx-chart-nav').remove();
     if (buttonId === 'report') {
       dom.append(createJiraChartNav());
