@@ -2,6 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var Validator = require('../shared/validator');
 var menuItemTemplate = require('./templates/menu_item.hbs');
+var chartIntroTemplate = require('./templates/chart_intro.hbs');
 
 module.exports = ChartMenu;
 
@@ -40,6 +41,10 @@ ChartMenu.prototype._appendMenuItems = function() {
   menuItems.click(function() {
     $(this).closest('#ghx-chart-nav').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
     $(this).closest(menuItemSelector).addClass(ChartMenu.SELECTED_CLASS);      
+    $(this).closest('#ghx-report').find('#ghx-chart-message').empty();
+    $(this).closest('#ghx-report').find('#ghx-chart-intro').empty();
+    $(this).closest('#ghx-report').find('#ghx-chart-header').empty();
+    $(this).closest('#ghx-report').find('#ghx-chart-content').empty();
   });
   findChartNav(this._target).append(menuItems);
   this._addListeners();

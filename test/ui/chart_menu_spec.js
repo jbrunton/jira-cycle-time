@@ -2,6 +2,7 @@ var ChartMenu = require('../../scripts/ui/chart_menu');
 var Chart = require('../../scripts/ui/chart');
 var Validator = require('../../scripts/shared/validator');
 var menuItemTemplate = require('../../scripts/ui/templates/menu_item.hbs');
+var reportModeTemplate = require('./templates/report_mode.hbs');
 
 describe ('ChartMenu', function() {
   var dom, chartMenu, chart, validOpts,
@@ -46,20 +47,20 @@ describe ('ChartMenu', function() {
   
   describe ("#bind", function() {
     it ("appends its menu items to the DOM", function() {
-      dom.append(createJiraChartNav());
+      appendChartNav();
       chartMenu.bind(dom);
       expect(customChartMenuItem()).toExist();
     });
     
     it ("appends its menu items to the DOM if the DOM is updated", function() {
       chartMenu.bind(dom);
-      dom.append(createJiraChartNav());
+      appendChartNav();
       expect(customChartMenuItem()).toExist();
     });
 	
     it ("appends its menu items to the DOM if the view mode is changed to Report", function() {
       // arrange
-      dom.append(createJiraChartNav());
+      appendChartNav();
       chartMenu.bind(dom);
 
       // switch to the 'Plan' view mode
@@ -77,7 +78,6 @@ describe ('ChartMenu', function() {
     
     it ("appends its menu items to the DOM in the right order if the navigation menu is updated", function() {
       var chartNav = createJiraChartNav();
-      chartNav.append(createJiraChartMenuItem());
       dom.append(chartNav);
       chartMenu.bind(dom);
       
@@ -87,9 +87,11 @@ describe ('ChartMenu', function() {
       expect(customChartMenuItem()).toExist();
       expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, 'other-id', CUSTOM_CHART_MENU_ITEM_ID]);
     });
-    
+  });
+  
+  describe ("#click", function() {
     it ("highlights selected menu items", function() {
-      dom.append(createJiraChartNav);
+      appendChartNav();
       chartMenu.bind(dom);
       var customMenuItem = customChartMenuItem(),
         jiraMenuItem = jiraChartMenuItem();
@@ -99,6 +101,18 @@ describe ('ChartMenu', function() {
       expect(customMenuItem).toHaveClass(ChartMenu.SELECTED_CLASS);
       expect(jiraMenuItem).not.toHaveClass(ChartMenu.SELECTED_CLASS);
     });
+    
+    it ("clears the chart sections", function() {
+      appendChartNav();
+      chartMenu.bind(dom);
+      
+      customChartMenuItem().click();
+      
+      expect(dom.find('#ghx-chart-message')).toBeEmpty();
+      expect(dom.find('#ghx-chart-intro')).toBeEmpty();
+      expect(dom.find('#ghx-chart-header')).toBeEmpty();
+      expect(dom.find('#ghx-chart-content')).toBeEmpty();
+    });
   });
   
   function findById(id) {
@@ -106,7 +120,11 @@ describe ('ChartMenu', function() {
   }
   
   function createDom() {
-    return jasmine.getFixtures().set("<div><div id='ghx-view-modes'><a id='plan' class='aui-button'>Plan</a><a id='report' class='aui-button'>Report</a></div></div>");
+    return jasmine.getFixtures().set(reportModeTemplate());
+  }
+  
+  function appendChartNav() {
+    dom.find('#ghx-report').append(createJiraChartNav());
   }
   
   function createJiraChartNav() {
