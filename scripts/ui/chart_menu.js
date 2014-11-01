@@ -2,7 +2,6 @@ var _ = require('lodash');
 var $ = require('jquery');
 var Validator = require('../shared/validator');
 var menuItemTemplate = require('./templates/menu_item.hbs');
-var chartIntroTemplate = require('./templates/chart_intro.hbs');
 
 module.exports = ChartMenu;
 
