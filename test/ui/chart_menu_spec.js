@@ -1,6 +1,7 @@
 var ChartMenu = require('../../scripts/ui/chart_menu');
 var Chart = require('../../scripts/ui/chart');
 var Validator = require('../../scripts/shared/validator');
+var menuItemTemplate = require('../../scripts/ui/templates/menu_item.hbs');
 
 describe ('ChartMenu', function() {
   var dom, chartMenu, chart, validOpts,
@@ -63,7 +64,6 @@ describe ('ChartMenu', function() {
 
       // switch to the 'Plan' view mode
       switchToViewMode('plan');
-      expect(jiraChartMenuItem()).not.toExist();
       expect(customChartMenuItem()).not.toExist();
 
       // act
@@ -72,8 +72,20 @@ describe ('ChartMenu', function() {
 
       // assert
       // ensure we've added our custom charts back to the menu
-      expect(jiraChartMenuItem()).toExist();
       expect(customChartMenuItem()).toExist();
+    });
+    
+    it ("appends its menu items to the DOM in the right order if the navigation menu is updated", function() {
+      var chartNav = createJiraChartNav();
+      chartNav.append(createJiraChartMenuItem());
+      dom.append(chartNav);
+      chartMenu.bind(dom);
+      
+      chartNav.html(createJiraChartMenuItem());
+      chartNav.append(createJiraChartMenuItem('other-id'));
+      
+      expect(customChartMenuItem()).toExist();
+      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, 'other-id', CUSTOM_CHART_MENU_ITEM_ID]);
     });
     
     it ("highlights selected menu items", function() {
@@ -98,7 +110,18 @@ describe ('ChartMenu', function() {
   }
   
   function createJiraChartNav() {
-    return $("<ul id='ghx-chart-nav'><li id='" + JIRA_CHART_MENU_ITEM_ID + "' class='aui-nav-selected'></li></ul>");
+    return $("<ul id='ghx-chart-nav'></ul>");
+  }
+  
+  function createJiraChartMenuItem(id) {
+    id = id || JIRA_CHART_MENU_ITEM_ID;
+    return $("<li id='" + id + "' class='aui-nav-selected'></li>");
+  }
+  
+  function menuItems() {
+    return _($(dom).find('#ghx-chart-nav li').toArray()).map(function(el) {
+      return el.id;
+    }).value();
   }
   
   function jiraChartMenuItem() {

@@ -33,25 +33,50 @@ ChartMenu.prototype.bind = function(target) {
 }
 
 ChartMenu.prototype._appendMenuItems = function() {
-  var menuItems = this._inflateMenuItems();
+  this._removeListeners();
+  _.each(this.charts, this._appendMenuItem);
+  var menuItemSelector = '#ghx-chart-nav li';
+  var menuItems = $(this._target).find(menuItemSelector);
   menuItems.click(function() {
-    var menuItemSelector = '#ghx-chart-nav li';
     $(this).closest('#ghx-chart-nav').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
     $(this).closest(menuItemSelector).addClass(ChartMenu.SELECTED_CLASS);      
   });
   findChartNav(this._target).append(menuItems);
-  this._configureListeners();
+  this._addListeners();
 }
 
-ChartMenu.prototype._configureListeners = function() {
+ChartMenu.prototype._appendMenuItem = function(chart) {
+  var chartNav = findChartNav(this._target);
+  var menuItem = this._findMenuItemFor(chart);
+  if (menuItem.size() > 0) {
+    chartNav.append(menuItem);
+  } else {
+    menuItem = menuItemTemplate(chart);
+    chartNav.append(menuItem);
+  }
+}
+
+ChartMenu.prototype._findMenuItemFor = function(chart) {
+  return findChartNav(this._target).find('li#' + chart.menuItemId);
+}
+
+ChartMenu.prototype._removeListeners = function() {
   findViewModeButtons(this._target).off('click', this._appendMenuItems);
+  findChartNav(this._target).off('DOMNodeInserted', this._appendMenuItems);  
+}
+
+ChartMenu.prototype._addListeners = function() {
   findViewModeButtons(this._target).on('click', this._appendMenuItems);
+  findChartNav(this._target).on('DOMNodeInserted', this._appendMenuItems);
 }
 
 ChartMenu.prototype._inflateMenuItems = function() {
   var menuItems = $();
+  var target = this._target;
   _.each(this.charts, function(chart) {
-    menuItems = menuItems.add($(menuItemTemplate(chart)));
+    if (target.find('#' + chart.menuItemId).size() === 0) {
+      menuItems = menuItems.add($(menuItemTemplate(chart)));      
+    }
   });
   return menuItems;
 }
