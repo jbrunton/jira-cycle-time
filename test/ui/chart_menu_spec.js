@@ -47,13 +47,13 @@ describe ('ChartMenu', function() {
     it ("appends its menu items to the DOM", function() {
       dom.append(createJiraChartNav());
       chartMenu.bind(dom);
-      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
+      expect(customChartMenuItem()).toExist();
     });
     
     it ("appends its menu items to the DOM if the DOM is updated", function() {
       chartMenu.bind(dom);
       dom.append(createJiraChartNav());
-      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
+      expect(customChartMenuItem()).toExist();
     });
 	
     it ("appends its menu items to the DOM if the view mode is changed to Report", function() {
@@ -63,7 +63,8 @@ describe ('ChartMenu', function() {
 
       // switch to the 'Plan' view mode
       switchToViewMode('plan');
-      expect(menuItems()).toEqual([]);
+      expect(jiraChartMenuItem()).not.toExist();
+      expect(customChartMenuItem()).not.toExist();
 
       // act
       // switch back to the 'Report' view mode
@@ -71,27 +72,22 @@ describe ('ChartMenu', function() {
 
       // assert
       // ensure we've added our custom charts back to the menu
-      expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, CUSTOM_CHART_MENU_ITEM_ID]);
+      expect(jiraChartMenuItem()).toExist();
+      expect(customChartMenuItem()).toExist();
     });
     
     it ("highlights selected menu items", function() {
       dom.append(createJiraChartNav);
       chartMenu.bind(dom);
+      var customMenuItem = customChartMenuItem(),
+        jiraMenuItem = jiraChartMenuItem();
+
+      customMenuItem.click();
       
-      var chartMenuItem = findById(CUSTOM_CHART_MENU_ITEM_ID),
-        jiraMenuItem = findById(JIRA_CHART_MENU_ITEM_ID);
-      chartMenuItem.click();
-      
-      expect(chartMenuItem).toHaveClass(ChartMenu.SELECTED_CLASS);
+      expect(customMenuItem).toHaveClass(ChartMenu.SELECTED_CLASS);
       expect(jiraMenuItem).not.toHaveClass(ChartMenu.SELECTED_CLASS);
     });
   });
-  
-  function menuItems() {
-    return _($(dom).find('#ghx-chart-nav li').toArray()).map(function(el) {
-      return el.id;
-    }).value();
-  }
   
   function findById(id) {
     return dom.find('#' + id);
@@ -103,6 +99,14 @@ describe ('ChartMenu', function() {
   
   function createJiraChartNav() {
     return $("<ul id='ghx-chart-nav'><li id='" + JIRA_CHART_MENU_ITEM_ID + "' class='aui-nav-selected'></li></ul>");
+  }
+  
+  function jiraChartMenuItem() {
+    return findById(JIRA_CHART_MENU_ITEM_ID);
+  }
+  
+  function customChartMenuItem() {
+    return findById(CUSTOM_CHART_MENU_ITEM_ID);
   }
   
   function switchToViewMode(buttonId) {
