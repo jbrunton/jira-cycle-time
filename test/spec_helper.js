@@ -1,3 +1,5 @@
+var reportTemplate = require('./fixtures/templates/report.hbs');
+
 global._ = require('lodash');
 global.$ = require('jquery');
 global.q = require('q');
@@ -14,4 +16,8 @@ global.createSuccessfulResponse = function(responseData) {
   };
 
   return response;
+}
+
+global.createEmptyReport = function() {
+  return jasmine.getFixtures().set(reportTemplate());
 }

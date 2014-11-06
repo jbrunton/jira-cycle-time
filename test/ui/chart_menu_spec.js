@@ -2,7 +2,6 @@ var ChartMenu = require('../../scripts/ui/chart_menu');
 var Chart = require('../../scripts/ui/chart');
 var Validator = require('../../scripts/shared/validator');
 var menuItemTemplate = require('../../scripts/ui/templates/menu_item.hbs');
-var reportModeTemplate = require('./templates/report_mode.hbs');
 
 describe ('ChartMenu', function() {
   var dom, chartMenu, chart, validOpts,
@@ -22,7 +21,7 @@ describe ('ChartMenu', function() {
     
     chartMenu = new ChartMenu(validOpts);
 
-    dom = createDom();
+    dom = createEmptyReport();
   });
   
   describe ("constructor", function() {
@@ -117,10 +116,6 @@ describe ('ChartMenu', function() {
   
   function findById(id) {
     return dom.find('#' + id);
-  }
-  
-  function createDom() {
-    return jasmine.getFixtures().set(reportModeTemplate());
   }
   
   function appendChartNav() {
