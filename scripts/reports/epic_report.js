@@ -9,6 +9,9 @@ function EpicReport(jiraClient) {
   this._jiraClient = jiraClient;
 }
 
+EpicReport.CHART_TITLE_SELECTOR = '#ghx-chart-title h2';
+EpicReport.CHART_TITLE = 'Epic Cycle Time';
+
 EpicReport.prototype.render = function(target) {
-  $('#ghx-chart-title').html('<h2>Epic Cycle Time</h2>');
+  $(target).find(EpicReport.CHART_TITLE_SELECTOR).text(EpicReport.CHART_TITLE);
 }

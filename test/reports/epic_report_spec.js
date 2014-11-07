@@ -25,7 +25,7 @@ describe ('EpicReport', function() {
     it ("renders the report title", function() {
       report.render(dom);
       var chartTitle = $('#ghx-chart-title');
-      expect(chartTitle).toContainHtml('<h2>Epic Cycle Time</h2>');
+      expect(dom.find(EpicReport.CHART_TITLE_SELECTOR)).toHaveText(EpicReport.CHART_TITLE);
     });
   });
 });

@@ -37,7 +37,7 @@ ChartMenu.prototype._appendMenuItems = function() {
   _.each(this.charts, this._appendMenuItem);
   var menuItemSelector = '#ghx-chart-nav li';
   var menuItems = $(this._target).find(menuItemSelector);
-  menuItems.click(menuItemClickHandler);
+  // menuItems.click(menuItemClickHandler);
   findChartNav(this._target).append(menuItems);
   this._addListeners();
 }
@@ -48,9 +48,10 @@ ChartMenu.prototype._appendMenuItem = function(chart) {
   if (menuItem.size() > 0) {
     chartNav.append(menuItem);
   } else {
-    menuItem = menuItemTemplate(chart);
+    menuItem = $(menuItemTemplate(chart));
     chartNav.append(menuItem);
   }
+  menuItem.click(clickHandlerFor(chart));
 }
 
 ChartMenu.prototype._findMenuItemFor = function(chart) {
@@ -78,16 +79,19 @@ ChartMenu.prototype._inflateMenuItems = function() {
   return menuItems;
 }
 
-function menuItemClickHandler() {
+function clickHandlerFor(chart) {
+  return function() {
     $(this).closest('#ghx-chart-nav').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
     $(this).addClass(ChartMenu.SELECTED_CLASS);
-    
-    var report = $(this).closest('#ghx-report');     
+  
+    var report = $(this).closest('#ghx-report');
     report.find('#ghx-chart-message').empty();
     report.find('#ghx-chart-intro').empty();
-    report.find('#ghx-chart-header').empty();
-    report.find('#ghx-chart-content').empty();
+
+    var content = report.find('#ghx-chart-content');
+    chart.report.render(content.get(0));
   }
+}
 
 function chartNavExists(target) {
   return findChartNav(target).size() > 0;

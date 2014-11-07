@@ -12,7 +12,12 @@ describe ('ChartMenu', function() {
   beforeEach (function() {
     chart = new Chart({
       title: 'Some Chart',
-      menuItemId: CUSTOM_CHART_MENU_ITEM_ID
+      menuItemId: CUSTOM_CHART_MENU_ITEM_ID,
+      report: {
+        render: function(content) {
+          $(content).html('<p>Custom Content</p>')
+        }
+      }
     });
 
     validOpts = {
@@ -101,7 +106,7 @@ describe ('ChartMenu', function() {
       expect(jiraMenuItem).not.toHaveClass(ChartMenu.SELECTED_CLASS);
     });
     
-    it ("clears the chart sections", function() {
+    it ("prepares the report sections", function() {
       appendChartNav();
       chartMenu.bind(dom);
       
@@ -109,8 +114,15 @@ describe ('ChartMenu', function() {
       
       expect(dom.find('#ghx-chart-message')).toBeEmpty();
       expect(dom.find('#ghx-chart-intro')).toBeEmpty();
-      expect(dom.find('#ghx-chart-header')).toBeEmpty();
-      expect(dom.find('#ghx-chart-content')).toBeEmpty();
+    });
+    
+    it ("renders the custom chart", function() {
+      appendChartNav();
+      chartMenu.bind(dom);
+      
+      customChartMenuItem().click();
+      
+      expect(dom.find('#ghx-chart-content')).toContainText('Custom Content');
     });
   });
   
