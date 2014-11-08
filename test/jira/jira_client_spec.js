@@ -71,7 +71,16 @@ describe ('JiraClient', function() {
     it ("searches by the given query, if one is provided", function() {
       client.search({ query: 'issuetype=Epic' })
       request = jasmine.Ajax.requests.mostRecent();
-      expect(request.url).toBe(domain + '/rest/api/2/search?issuetype=Epic');
+      expect(request.url).toBe(domain + '/rest/api/2/search?jql=issuetype=Epic');
+    });
+    
+    it ("expands the given query parameters, if provided", function() {
+      client.search({
+        query: 'issuetype=Epic',
+        expand: ['transitions', 'changelog']
+      });
+      request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe(domain + '/rest/api/2/search?expand=transitions,changelog&jql=issuetype=Epic');
     });
   });
 });
