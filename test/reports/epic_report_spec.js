@@ -24,8 +24,7 @@ describe ('EpicReport', function() {
   describe ('render', function() {
     it ("renders the report title", function() {
       report.render(dom);
-      var chartTitle = $('#ghx-chart-title');
-      expect(dom.find(EpicReport.CHART_TITLE_SELECTOR)).toHaveText(EpicReport.CHART_TITLE);
+      expect(dom).toHaveText(EpicReport.CHART_CONTENT);
     });
   });
 });

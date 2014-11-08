@@ -1,3 +1,6 @@
+var _ = require('lodash');
+var $ = require('jquery');
+
 var Validator = require('../shared/validator');
 
 module.exports = JiraClient;

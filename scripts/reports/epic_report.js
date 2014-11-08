@@ -1,17 +1,21 @@
-var Validator = require('../shared/validator');
+var $ = require('jquery');
+
+var Class = require('../shared/class');
+var BaseReport = require('./base_report');
 
 module.exports = EpicReport;
 
+Class(EpicReport).extends(BaseReport);
+
 function EpicReport(jiraClient) {
-  new Validator()
-    .requires(jiraClient, 'JiraClient');
-  
-  this._jiraClient = jiraClient;
+  BaseReport.call(this, {
+    jiraClient: jiraClient,
+    title: 'Epic Cycle Time'
+  });
 }
 
-EpicReport.CHART_TITLE_SELECTOR = '#ghx-chart-title h2';
-EpicReport.CHART_TITLE = 'Epic Cycle Time';
+EpicReport.CHART_CONTENT = 'Hello';
 
 EpicReport.prototype.render = function(target) {
-  $(target).find(EpicReport.CHART_TITLE_SELECTOR).text(EpicReport.CHART_TITLE);
+  $(target).html('<p>' + EpicReport.CHART_CONTENT + '</p>');
 }
