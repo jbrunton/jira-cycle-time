@@ -26,7 +26,25 @@ describe ('Issue', function() {
             items: [
               {
                 field: "status",
+                toString: "Done"
+              }
+            ]
+          },
+          {
+            created: "2014-01-03T12:30:00.000+0100",
+            items: [
+              {
+                field: "status",
                 toString: "In Progress"
+              }
+            ]
+          },
+          {
+            created: "2014-01-04T12:30:00.000+0100",
+            items: [
+              {
+                field: "status",
+                toString: "Done"
               }
             ]
           }
@@ -44,6 +62,11 @@ describe ('Issue', function() {
     it ("calculates the started date", function() {
       var expectedDate = moment("2014-01-01T12:30:00.000+0100");
       expect(issue.startedDate).toBeSameTimeAs(expectedDate);
+    });
+    
+    it ("calculates the completed date", function() {
+      var expectedDate = moment("2014-01-04T12:30:00.000+0100");
+      expect(issue.completedDate).toBeSameTimeAs(expectedDate);
     });
   });
 });

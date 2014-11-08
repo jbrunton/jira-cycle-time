@@ -1,7 +1,14 @@
-<table>
-{{#each issues}}
+<table class="aui">
   <tr>
-    <td>
+    <th>Key</th>
+    <th>Summary</th>
+    <th>Started</th>
+    <th>Completed</th>
+  </tr>
+  
+  {{#each issues}}
+  <tr>
+    <td class="ghx-nowrap ghx-minimal">
       <a href="/browse/{{key}}">
         {{key}}
       </a>
@@ -12,6 +19,9 @@
     <td>
       {{date startedDate}}
     </td>
+    <td>
+      {{date completedDate}}
+    </td>
   </tr>
-{{/each}}
+  {{/each}}
 </table>

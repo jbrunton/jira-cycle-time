@@ -10,6 +10,7 @@ function Issue(json) {
   
   if (json.changelog) {
     this.startedDate = getStartedDate(json.changelog);
+    this.completedDate = getCompletedDate(json.changelog);
   }
 }
 
@@ -43,6 +44,21 @@ function getStartedDate(changelog) {
 
   if (startedTransitions.any()) {
     return moment(startedTransitions.first().created);
+  } else {
+    return null;
+  }
+}
+
+function getCompletedDate(changelog) {
+  var lastTransition = _(changelog.histories)
+    .filter(function(entry) {
+      return _(entry.items)
+        .any(isStatusTransition);
+    }).last();
+
+  if (lastTransition && _(lastTransition.items)
+    .any(isCompletedTransition)) {
+    return moment(lastTransition.created);
   } else {
     return null;
   }
