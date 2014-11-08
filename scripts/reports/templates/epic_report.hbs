@@ -1,12 +1,35 @@
 <table class="aui">
   <tr>
-    <th>Key</th>
-    <th>Summary</th>
-    <th>Started</th>
-    <th>Completed</th>
+    <th width="10%" class="ghx-nowrap ghx-minimal">Key</th>
+    <th width="30%">Summary</th>
+    <th width="22%">Started</th>
+    <th width="22%">Completed</th>
   </tr>
-  
-  {{#each epics}}
+</table>
+
+{{#each epics}}
+
+<h3>{{summary}}</h3>
+
+<table class="aui">
+  <tr>
+    <td width="10%" class="ghx-nowrap ghx-minimal">
+      <a href="/browse/{{key}}">
+        {{key}}
+      </a>
+    </td>
+    <th width="30%">
+      {{summary}}
+    </th>
+    <th width="22%">
+      {{date startedDate}}
+    </th>
+    <th width="22%">
+      {{date completedDate}}
+    </th>
+  </tr>
+
+  {{#each issues}}
   <tr>
     <td class="ghx-nowrap ghx-minimal">
       <a href="/browse/{{key}}">
@@ -24,4 +47,6 @@
     </td>
   </tr>
   {{/each}}
+
 </table>
+{{/each}}

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
+var Q = require('q');
 
 var Issue = require('./issue');
 var Epic = require('./epic');
@@ -42,11 +43,13 @@ JiraClient.prototype.search = function(opts) {
     }    
   }, this);
   
-  return $.ajax({
-		type: 'GET',
-		url: url,
-    contentType: 'application/json'
-  }).then(function(response) {
+  return Q(
+      $.ajax({
+		    type: 'GET',
+		    url: url,
+        contentType: 'application/json'
+      })
+  ).then(function(response) {
     return _(response.issues)
       .map(fromJson)
       .value();

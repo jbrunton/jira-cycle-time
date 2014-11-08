@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var _ = require('lodash');
+var Q = require('q');
 
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
@@ -19,10 +20,23 @@ function EpicReport(jiraClient) {
 EpicReport.CHART_CONTENT = 'Hello';
 
 EpicReport.prototype.render = function(target) {
-  return this.jiraClient.getEpics().then(function(epics) {
-    $(target).append(epicReportTemplate({
-      epics: epics
-    }));
-  });
+  var loadEpics = function(epics) {
+    return Q.all(
+        _(epics).map(function(epic) {
+          return epic.load();
+        }).value()
+      );
+  };
+  
+  var renderReport = function(epics) {
+    $(target).append(
+      epicReportTemplate({ epics: epics })
+    );    
+  };
+
+  return this.jiraClient
+    .getEpics()
+    .then(loadEpics)
+    .then(renderReport);
 }
 

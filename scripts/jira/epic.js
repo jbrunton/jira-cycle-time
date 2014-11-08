@@ -1,3 +1,6 @@
+var _ = require('lodash');
+var Q = require('q');
+
 var Issue = require('./issue');
 var Class = require('../shared/class');
 
@@ -18,7 +21,7 @@ Epic.prototype.load = function() {
   
   var assignIssues = _.bind(function(issues) {
     this.issues = issues;
-    return this;
+    return Q(this);
   }, this);
   
   return this.jiraClient.search(searchOpts)
