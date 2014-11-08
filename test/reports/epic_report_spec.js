@@ -4,12 +4,13 @@ var Validator = require('../../scripts/shared/validator');
 
 describe ('EpicReport', function() {
   
-  var report, dom;
+  var report, dom, jiraClient;
   
   beforeEach(function() {
-    report = new EpicReport(new JiraClient({
+    jiraClient = new JiraClient({
       domain: 'http://www.example.com' 
-    }));
+    });
+    report = new EpicReport(jiraClient);
     dom = createEmptyReport();
   });
   
@@ -22,9 +23,14 @@ describe ('EpicReport', function() {
   });
   
   describe ('render', function() {
-    it ("renders the report title", function() {
-      report.render(dom);
-      expect(dom).toHaveText(EpicReport.CHART_CONTENT);
+    it ("renders a list of issues", function(done) {
+      var expectedIssues = [{ key: 'DEMO-101' }];
+      spyOn(jiraClient, 'search').and.returnValue(Q(expectedIssues));
+
+      report.render(dom).then(function() {      
+        expect(dom).toContainText('DEMO-101');
+        done();
+      });
     });
   });
 });

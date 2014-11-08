@@ -15,7 +15,7 @@ describe ('ChartMenu', function() {
       report: {
         title: 'Some Chart',
         render: function(content) {
-          $(content).html('<p>Custom Content</p>')
+          $(content).append('<p>Custom Content</p>');
         }
       }
     });
@@ -123,7 +123,7 @@ describe ('ChartMenu', function() {
       
       customChartMenuItem().click();
       
-      expect(dom.find('#ghx-chart-content')).toContainText('Custom Content');
+      expect(dom.find('#ghx-chart-content').text()).toBe('Custom Content');
     });
   });
   

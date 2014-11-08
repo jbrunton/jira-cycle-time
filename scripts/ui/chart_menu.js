@@ -87,6 +87,7 @@ function clickHandlerFor(chart) {
     var report = $(this).closest('#ghx-report');
     report.find('#ghx-chart-message').empty();
     report.find('#ghx-chart-intro').empty();
+    report.find('#ghx-chart-content').empty();
 
     var content = report.find('#ghx-chart-content');
     chart.report.render(content.get(0));

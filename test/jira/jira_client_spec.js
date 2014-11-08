@@ -37,15 +37,15 @@ describe ('JiraClient', function() {
     var promise, request;
     
     beforeEach(function() {
-      promise = client.search({ query: 'issuetype=Epic' });
+      promise = client.search();
       request = jasmine.Ajax.requests.mostRecent();
     });
     
-    it ("requests all issues matching the search query", function() {
+    it ("searches for Jira issues", function() {
       expect(request.method).toBe('GET');
       expect(request.contentType()).toBe('application/json');
-      expect(request.url).toBe(domain + '/rest/api/2/search?issuetype=Epic');
-    });
+      expect(request.url).toBe(domain + '/rest/api/2/search');      
+    });      
     
     it ("returns the issues in the response", function(done) {
       var expectedIssues = [
@@ -55,11 +55,17 @@ describe ('JiraClient', function() {
       request.response(createSuccessfulResponse({
         issues: expectedIssues
       }));
-      
+    
       promise.then(function(issues) {
         expect(issues).toEqual(expectedIssues);
         done();
       });
+    });
+    
+    it ("searches by the given query, if one is provided", function() {
+      client.search({ query: 'issuetype=Epic' })
+      request = jasmine.Ajax.requests.mostRecent();
+      expect(request.url).toBe(domain + '/rest/api/2/search?issuetype=Epic');
     });
   });
 });

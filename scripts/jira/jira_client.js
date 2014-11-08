@@ -14,7 +14,10 @@ function JiraClient(opts) {
 }
 
 JiraClient.prototype.search = function(opts) {
-  var url = this.domain + '/rest/api/2/search?' + opts.query;
+  var url = this.domain + '/rest/api/2/search';
+  if (opts && opts.query) {
+    url += '?' + opts.query;
+  }
   return $.ajax({
 		type: 'GET',
 		url: url,

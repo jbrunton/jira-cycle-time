@@ -2,7 +2,7 @@ var reportTemplate = require('./fixtures/templates/report.hbs');
 
 global._ = require('lodash');
 global.$ = require('jquery');
-global.q = require('q');
+global.Q = require('q');
 
 beforeEach(function() {
   jasmine.Ajax.install();
