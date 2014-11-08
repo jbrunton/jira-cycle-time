@@ -55,7 +55,10 @@ describe ('JiraClient', function() {
         issues: [{
           key: expectedKey,
           fields: {
-            summary: expectedSummary
+            summary: expectedSummary,
+            issuetype: {
+              name: 'Story'
+            }
           }
         }]
       }));
@@ -80,6 +83,44 @@ describe ('JiraClient', function() {
       });
       request = jasmine.Ajax.requests.mostRecent();
       expect(request.url).toBe(domain + '/rest/api/2/search?expand=transitions,changelog&jql=issuetype=Epic');
+    });
+  });
+  
+  describe ('#getEpics', function() {
+    var promise, request;
+    
+    beforeEach(function() {
+      promise = client.getEpics();
+      request = jasmine.Ajax.requests.mostRecent();
+    });
+    
+    it ("searches for epics in Jira", function() {
+      expect(request.method).toBe('GET');
+      expect(request.contentType()).toBe('application/json');
+      expect(request.url).toBe(domain + '/rest/api/2/search?jql=issuetype=Epic');      
+    });
+    
+    it ("returns the epics in the response", function(done) {
+      var expectedKey = 'DEMO-101';
+      var expectedSummary = 'Some Epic';
+
+      request.response(createSuccessfulResponse({
+        issues: [{
+          key: expectedKey,
+          fields: {
+            summary: expectedSummary,
+            issuetype: {
+              name: 'Epic'
+            }
+          }
+        }]
+      }));
+    
+      promise.then(function(epics) {
+        expect(epics[0].key).toEqual(expectedKey);
+        expect(epics[0].summary).toEqual(expectedSummary);
+        done();
+      });
     });
   });
 });

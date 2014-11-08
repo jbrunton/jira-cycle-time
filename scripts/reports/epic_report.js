@@ -19,9 +19,9 @@ function EpicReport(jiraClient) {
 EpicReport.CHART_CONTENT = 'Hello';
 
 EpicReport.prototype.render = function(target) {
-  return this.jiraClient.search({ expand: ['changelog'] }).then(function(issues) {
+  return this.jiraClient.getEpics().then(function(epics) {
     $(target).append(epicReportTemplate({
-      issues: issues
+      epics: epics
     }));
   });
 }

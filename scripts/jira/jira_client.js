@@ -2,6 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 
 var Issue = require('./issue');
+var Epic = require('./epic');
 var Validator = require('../shared/validator');
 
 module.exports = JiraClient;
@@ -39,7 +40,17 @@ JiraClient.prototype.search = function(opts) {
     contentType: 'application/json'
   }).then(function(response) {
     return _(response.issues)
-      .map(Issue.fromJson)
+      .map(function(json) {
+        if (json.fields.issuetype.name == 'Epic') {
+          return Epic.fromJson(json);
+        } else {
+          return Issue.fromJson(json);
+        }
+      })
       .value();
   });
+}
+
+JiraClient.prototype.getEpics = function() {
+  return this.search({ query: 'issuetype=Epic' });
 }

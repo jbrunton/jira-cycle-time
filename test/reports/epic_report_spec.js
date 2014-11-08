@@ -24,8 +24,8 @@ describe ('EpicReport', function() {
   
   describe ('render', function() {
     it ("renders a list of issues", function(done) {
-      var expectedIssues = [{ key: 'DEMO-101' }];
-      spyOn(jiraClient, 'search').and.returnValue(Q(expectedIssues));
+      var expectedEpics = [{ key: 'DEMO-101' }];
+      spyOn(jiraClient, 'getEpics').and.returnValue(Q(expectedEpics));
 
       report.render(dom).then(function() {      
         expect(dom).toContainText('DEMO-101');
