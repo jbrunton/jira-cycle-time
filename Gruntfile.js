@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     
     watch: {
       scripts: {
-        files: ['Gruntfile.js', 'manifest.json', 'vendor/**/*.js', 'scripts/**/*.js', 'scripts/**/*.hbs', 'test/**/*.js', 'scripts/**/*.hbs'],
+        files: ['Gruntfile.js', 'manifest.json', 'vendor/**/*.js', 'scripts/**/*.js', 'scripts/**/*.hbs', 'test/**/*.js', 'test/**/*.hbs'],
         tasks: ['copy', 'browserify:debug', 'browserify:test', 'jasmine:test:build'],
         options: {
           spawn: false
