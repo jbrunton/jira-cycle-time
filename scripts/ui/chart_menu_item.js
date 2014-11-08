@@ -1,7 +1,9 @@
 var _ = require('lodash');
 var Validator = require('../shared/validator');
 
-function Chart(opts) {
+module.exports = ChartMenuItem;
+
+function ChartMenuItem(opts) {
   new Validator()
     .requires(opts, 'opts')
     .requires(opts.report, 'opts.report')
@@ -9,5 +11,3 @@ function Chart(opts) {
   
   _.assign(this, opts);
 }
-
-module.exports = Chart;

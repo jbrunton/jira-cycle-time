@@ -8,7 +8,7 @@ module.exports = ChartMenu;
 function ChartMenu(opts) {
   new Validator()
     .requires(opts, 'opts')
-    .requires(opts.charts, 'opts.charts');
+    .requires(opts.menuItems, 'opts.menuItems');
     
   _.assign(this, opts);
   
@@ -34,7 +34,7 @@ ChartMenu.prototype.bind = function(target) {
 
 ChartMenu.prototype._appendMenuItems = function() {
   this._removeListeners();
-  _.each(this.charts, this._appendMenuItem);
+  _.each(this.menuItems, this._appendMenuItem);
   var menuItemSelector = '#ghx-chart-nav li';
   var menuItems = $(this._target).find(menuItemSelector);
   // menuItems.click(menuItemClickHandler);
@@ -71,7 +71,7 @@ ChartMenu.prototype._addListeners = function() {
 ChartMenu.prototype._inflateMenuItems = function() {
   var menuItems = $();
   var target = this._target;
-  _.each(this.charts, function(chart) {
+  _.each(this.menuItems, function(chart) {
     if (target.find('#' + chart.menuItemId).size() === 0) {
       menuItems = menuItems.add($(menuItemTemplate(chart)));      
     }

@@ -1,5 +1,5 @@
 var ChartMenu = require('../../scripts/ui/chart_menu');
-var Chart = require('../../scripts/ui/chart');
+var ChartMenuItem = require('../../scripts/ui/chart_menu_item');
 var Validator = require('../../scripts/shared/validator');
 var menuItemTemplate = require('../../scripts/ui/templates/menu_item.hbs');
 
@@ -10,7 +10,7 @@ describe ('ChartMenu', function() {
   
   
   beforeEach (function() {
-    chart = new Chart({
+    chart = new ChartMenuItem({
       menuItemId: CUSTOM_CHART_MENU_ITEM_ID,
       report: {
         title: 'Some Chart',
@@ -21,7 +21,7 @@ describe ('ChartMenu', function() {
     });
 
     validOpts = {
-      charts: [chart]
+      menuItems: [chart]
     };
     
     chartMenu = new ChartMenu(validOpts);
@@ -36,11 +36,11 @@ describe ('ChartMenu', function() {
       }).toThrow(Validator.messages.requires('opts'));
     });
     
-    it ("requires a list of charts", function() {
+    it ("requires a list of menu items", function() {
       expect(function() {
-        var opts = _.omit(validOpts, 'charts');
+        var opts = _.omit(validOpts, 'menuItems');
         new ChartMenu(opts);
-      }).toThrow(Validator.messages.requires('opts.charts'));
+      }).toThrow(Validator.messages.requires('opts.menuItems'));
     });
     
     it ("initializes the instance", function() {
