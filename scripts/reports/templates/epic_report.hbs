@@ -1,7 +1,14 @@
+<table>
 {{#each issues}}
-<p>
-  <a href="/browse/{{key}}">
-    {{key}}
-  </a>
-</p>
+  <tr>
+    <td>
+      <a href="/browse/{{key}}">
+        {{key}}
+      </a>
+    </td>
+    <td>
+      {{summary}}
+    </td>
+  </tr>
 {{/each}}
+</table>

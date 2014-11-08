@@ -18,11 +18,21 @@ JiraClient.prototype.search = function(opts) {
   if (opts && opts.query) {
     url += '?' + opts.query;
   }
+  
+  function issueFromJson(json) {
+    return {
+      key: json.key,
+      summary: json.fields.summary
+    };
+  }
+  
   return $.ajax({
 		type: 'GET',
 		url: url,
     contentType: 'application/json'
   }).then(function(response) {
-    return response.issues;
+    return _(response.issues)
+      .map(issueFromJson)
+      .value();
   });
 }

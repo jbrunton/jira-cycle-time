@@ -48,12 +48,18 @@ describe ('JiraClient', function() {
     });      
     
     it ("returns the issues in the response", function(done) {
-      var expectedIssues = [
-        { key: 'DEMO-101' }
-      ];
+      var expectedIssues = [{
+        key: 'DEMO-101',
+        summary: 'Some Issue'
+      }];
 
       request.response(createSuccessfulResponse({
-        issues: expectedIssues
+        issues: [{
+          key: 'DEMO-101',
+          fields: {
+            summary: 'Some Issue'
+          }
+        }]
       }));
     
       promise.then(function(issues) {
