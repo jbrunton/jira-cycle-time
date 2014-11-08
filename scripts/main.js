@@ -11,7 +11,7 @@ $(function() {
     domain: 'https://jbrunton.atlassian.net'
   });
   var chartMenuItem = new ChartMenuItem({
-    menuItemId: 'test-chart',
+    menuItemId: 'epic-cycle-time',
     report: new EpicReport(jiraClient)
   });
   var chartMenu = new ChartMenu({

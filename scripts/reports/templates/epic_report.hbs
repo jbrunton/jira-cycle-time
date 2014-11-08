@@ -4,6 +4,7 @@
     <th width="30%">Summary</th>
     <th width="22%">Started</th>
     <th width="22%">Completed</th>
+    <th width="16%" class="ghx-right">Cycle Time</th>
   </tr>
 </table>
 
@@ -27,6 +28,9 @@
     <th width="22%">
       {{date completedDate}}
     </th>
+    <th width="16%" class="ghx-right">
+      {{cycle_time}}
+    </th>
   </tr>
 
   {{#each issues}}
@@ -44,6 +48,9 @@
     </td>
     <td>
       {{date completedDate}}
+    </td>
+    <td class="ghx-right">
+      {{cycle_time}}
     </td>
   </tr>
   {{/each}}
