@@ -34,19 +34,21 @@ JiraClient.prototype.search = function(opts) {
     }
   }
   
+  var fromJson = _.bind(function(json) {
+    if (json.fields.issuetype.name == 'Epic') {
+      return Epic.fromJson(this, json);
+    } else {
+      return Issue.fromJson(json);
+    }    
+  }, this);
+  
   return $.ajax({
 		type: 'GET',
 		url: url,
     contentType: 'application/json'
   }).then(function(response) {
     return _(response.issues)
-      .map(function(json) {
-        if (json.fields.issuetype.name == 'Epic') {
-          return Epic.fromJson(json);
-        } else {
-          return Issue.fromJson(json);
-        }
-      })
+      .map(fromJson)
       .value();
   });
 }
