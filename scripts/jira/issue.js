@@ -9,9 +9,12 @@ function Issue(json) {
   this.summary = json.fields.summary;
   
   if (json.changelog) {
-    this.startedDate = getStartedDate(json.changelog);
-    this.completedDate = getCompletedDate(json.changelog);
+    this.changelog = json.changelog;
+    this.startedDate = this.computeStartedDate();    
+    this.completedDate = this.computeCompletedDate();    
   }
+  
+  _.bindAll(this);
 }
 
 Issue.fromJson = function(json) {
@@ -34,8 +37,8 @@ function isCompletedTransition(item) {
     && (item.toString == "Done" || item.toString == "Closed");  
 }
 
-function getStartedDate(changelog) {
-  var startedTransitions = _(changelog.histories)
+Issue.prototype.computeStartedDate = function() {
+  var startedTransitions = _(this.changelog.histories)
     .filter(function(history) {
       return _(history.items).any(function(item) {
         return isStatusTransition(item);
@@ -49,8 +52,8 @@ function getStartedDate(changelog) {
   }
 }
 
-function getCompletedDate(changelog) {
-  var lastTransition = _(changelog.histories)
+Issue.prototype.computeCompletedDate = function() {
+  var lastTransition = _(this.changelog.histories)
     .filter(function(entry) {
       return _(entry.items)
         .any(isStatusTransition);
