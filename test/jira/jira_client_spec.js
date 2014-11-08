@@ -48,22 +48,21 @@ describe ('JiraClient', function() {
     });      
     
     it ("returns the issues in the response", function(done) {
-      var expectedIssues = [{
-        key: 'DEMO-101',
-        summary: 'Some Issue'
-      }];
+      var expectedKey = 'DEMO-101';
+      var expectedSummary = 'Some Issue';
 
       request.response(createSuccessfulResponse({
         issues: [{
-          key: 'DEMO-101',
+          key: expectedKey,
           fields: {
-            summary: 'Some Issue'
+            summary: expectedSummary
           }
         }]
       }));
     
       promise.then(function(issues) {
-        expect(issues).toEqual(expectedIssues);
+        expect(issues[0].key).toEqual(expectedKey);
+        expect(issues[0].summary).toEqual(expectedSummary);
         done();
       });
     });

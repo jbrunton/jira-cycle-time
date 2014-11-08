@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 
+var Issue = require('./issue');
 var Validator = require('../shared/validator');
 
 module.exports = JiraClient;
@@ -32,20 +33,13 @@ JiraClient.prototype.search = function(opts) {
     }
   }
   
-  function issueFromJson(json) {
-    return {
-      key: json.key,
-      summary: json.fields.summary
-    };
-  }
-  
   return $.ajax({
 		type: 'GET',
 		url: url,
     contentType: 'application/json'
   }).then(function(response) {
     return _(response.issues)
-      .map(issueFromJson)
+      .map(Issue.fromJson)
       .value();
   });
 }
