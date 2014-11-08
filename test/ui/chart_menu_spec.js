@@ -11,9 +11,9 @@ describe ('ChartMenu', function() {
   
   beforeEach (function() {
     chart = new Chart({
-      title: 'Some Chart',
       menuItemId: CUSTOM_CHART_MENU_ITEM_ID,
       report: {
+        title: 'Some Chart',
         render: function(content) {
           $(content).html('<p>Custom Content</p>')
         }
@@ -54,6 +54,7 @@ describe ('ChartMenu', function() {
       appendChartNav();
       chartMenu.bind(dom);
       expect(customChartMenuItem()).toExist();
+      expect(customChartMenuItem()).toContainText('Some Chart');
     });
     
     it ("appends its menu items to the DOM if the DOM is updated", function() {

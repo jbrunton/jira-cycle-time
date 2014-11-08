@@ -6,7 +6,9 @@ describe('Chart', function() {
   
   beforeEach (function() {
     validOpts = {
-      title: 'Some Title',
+      report: {
+        title: 'Some Title'
+      },
       menuItemId: 'some-id'
     };
   });
@@ -18,11 +20,11 @@ describe('Chart', function() {
       }).toThrow(Validator.messages.requires('opts'));
     });
     
-    it ("requires a title", function() {
+    it ("requires a report", function() {
       expect(function() {
-        var opts = _.omit(validOpts, 'title');
+        var opts = _.omit(validOpts, 'report');
         new Chart(opts);
-      }).toThrow(Validator.messages.requires('opts.title'));
+      }).toThrow(Validator.messages.requires('opts.report'));
     });
     
     it ("requires a menu item id", function() {
@@ -34,7 +36,7 @@ describe('Chart', function() {
     
     it ("initializes a chart", function() {
       var chart = new Chart(validOpts);
-      expect(chart.title).toBe(validOpts.title);
+      expect(chart.report).toBe(validOpts.report);
       expect(chart.menuItemId).toBe(validOpts.menuItemId);
     });
   });
