@@ -4,20 +4,21 @@ var Q = require('q');
 
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
-var epicReportTemplate = require('./templates/epic_report.hbs');
+var eventsReportTemplate = require('./templates/events_report.hbs');
+var computeEvents = require('../transforms/compute_events');
 
-module.exports = EpicReport;
+module.exports = EventsReport;
 
-Class(EpicReport).extends(BaseReport);
+Class(EventsReport).extends(BaseReport);
 
-function EpicReport(jiraClient) {
+function EventsReport(jiraClient) {
   BaseReport.call(this, {
     jiraClient: jiraClient,
-    title: 'Epic Cycle Time'
+    title: 'Events Report'
   });
 }
 
-EpicReport.prototype.render = function(target) {
+EventsReport.prototype.render = function(target) {
   var loadEpics = function(epics) {
     return Q.all(
         _(epics).map(function(epic) {
@@ -27,9 +28,10 @@ EpicReport.prototype.render = function(target) {
   };
   
   var renderReport = function(epics) {
+    var events = computeEvents(epics);
     $(target).append(
-      epicReportTemplate({ epics: epics })
-    );    
+      eventsReportTemplate({ events: events })
+    );
   };
 
   return this.jiraClient
