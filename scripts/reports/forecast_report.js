@@ -36,10 +36,26 @@ ForecastReport.prototype.render = function(target) {
     var content = forecastReportTemplate();
     $(target).append(content);
     
-    var cycleTimeData = computeCycleTimeSeries(epics);
+    //var cycleTimeData = computeCycleTimeSeries(epics);
+    //var wipData = computeWipSeries(epics);
+    
     var wipData = computeWipSeries(epics);
-
-    function drawChart() {
+    
+    
+    var backlogSizeInput = $(target).find('#forecast-backlog-size');    
+    var exclusionFilterInput = $(target).find('#forecast-exclusion-filter');    
+    backlogSizeInput.blur(render);
+    exclusionFilterInput.blur(render);
+    
+    function render() {
+      var exclusionKeys = exclusionFilterInput.val().split(',');
+      var exclusionFilter = function(epic) {
+        return !_(exclusionKeys).contains(epic.key);
+      };
+      
+      var includedEpics = _(epics).filter(exclusionFilter).value();
+      var cycleTimeData = computeCycleTimeSeries(includedEpics);
+      
       var timeChart = new TimeChart();
       timeChart.addSeries({
         key: 'cycle_time',
@@ -54,11 +70,8 @@ ForecastReport.prototype.render = function(target) {
         axisOrientation: 'right',
         data: wipData
       });
-      timeChart.draw($(target).find('#time-chart').get(0));      
-    }
-    drawChart();
+      timeChart.draw($(target).find('#time-chart').empty().get(0));      
     
-    function forecast() {
       var backlogSize = Number(backlogSizeInput.val());
       var simulator = new Simulator(new Randomizer());
       var forecastResult = simulator.forecast({
@@ -66,14 +79,13 @@ ForecastReport.prototype.render = function(target) {
         cycleTimeData: cycleTimeData,
         workInProgressData: wipData
       });
-  
+
       var forecastTemplate = require('./templates/forecast_output.hbs');
       var forecastSection = $(target).find('#forecast-output');
       forecastSection.html(forecastTemplate(forecastResult));
     }
     
-    var backlogSizeInput = $(target).find('#forecast-backlog-size');    
-    backlogSizeInput.blur(forecast);
+    render();
   };
 
   return this.jiraClient
