@@ -44,17 +44,40 @@ ForecastReport.prototype.render = function(target) {
     
     var backlogSizeInput = $(target).find('#forecast-backlog-size');    
     var exclusionFilterInput = $(target).find('#forecast-exclusion-filter');    
+    var sampleStartDateInput = $(target).find('#forecast-sample-start-date');
+    var sampleEndDateInput = $(target).find('#forecast-sample-end-date');
     backlogSizeInput.blur(render);
     exclusionFilterInput.blur(render);
+    sampleStartDateInput.blur(render);
+    sampleEndDateInput.blur(render);
     
     function render() {
-      var exclusionKeys = exclusionFilterInput.val().split(',');
-      var exclusionFilter = function(epic) {
-        return !_(exclusionKeys).contains(epic.key);
+      var startDate = wipData[0].date.clone(),
+        endDate = wipData[wipData.length - 1].date.clone();
+        
+      var sampleStartDate = moment(sampleStartDateInput.val()),
+        sampleEndDate = moment(sampleEndDateInput.val());
+      if (sampleStartDate.isValid()) {
+        startDate = sampleStartDate;
+      }
+      if (sampleEndDate.isValid()) {
+        endDate = sampleEndDate;
+      }
+        
+      var dateExclusionFilter = function(datum) {
+        return !datum.date.isBefore(startDate)
+          && !datum.date.isAfter(endDate);
+      };
+      var epicExclusionKeys = exclusionFilterInput.val().split(',');
+      var epicExclusionFilter = function(epic) {
+        return !_(epicExclusionKeys).contains(epic.key);
       };
       
-      var includedEpics = _(epics).filter(exclusionFilter).value();
+      var includedEpics = _(epics).filter(epicExclusionFilter).value();
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
+      
+      var sampleCycleTimeData = _(cycleTimeData).filter(dateExclusionFilter).value();
+      var sampleWipData = _(wipData).filter(dateExclusionFilter).value();
       
       var timeChart = new TimeChart();
       timeChart.addSeries({
@@ -62,13 +85,13 @@ ForecastReport.prototype.render = function(target) {
         color: 'red',
         circle: true,
         axisOrientation: 'left',
-        data: cycleTimeData  
+        data: sampleCycleTimeData  
       });
       timeChart.addSeries({
         key: 'wip',
         color: 'blue',
         axisOrientation: 'right',
-        data: wipData
+        data: sampleWipData
       });
       timeChart.draw($(target).find('#time-chart').empty().get(0));      
     
@@ -76,8 +99,8 @@ ForecastReport.prototype.render = function(target) {
       var simulator = new Simulator(new Randomizer());
       var forecastResult = simulator.forecast({
         backlogSize: backlogSize,
-        cycleTimeData: cycleTimeData,
-        workInProgressData: wipData
+        cycleTimeData: sampleCycleTimeData,
+        workInProgressData: sampleWipData
       });
 
       var forecastTemplate = require('./templates/forecast_output.hbs');
