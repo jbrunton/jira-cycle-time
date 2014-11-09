@@ -45,15 +45,19 @@ describe ('Simulator', function() {
   });
   
   describe ('#_pickCycleTimeValues', function() {
-    it ('picks opts.backlogSize values from cycleTimeData', function() {
-      stubRandomizerToReturn([1, 0, 1]);
+    it ('picks values from cycleTimeData for each category', function() {
+      stubRandomizerToReturn([1, 0, 1, 0, 1]);
       var values = simulator._pickCycleTimeValues({
-        backlogSize: 3,
-        cycleTimeData: [
-          { value: 2 }, { value: 3 }
-        ]
+        backlogSize: {
+          'S': 3,
+          'M': 2
+        },
+        cycleTimeData: {
+          'S': [{ value: 2 }, { value: 3 }],
+          'M': [{ value: 4 }, { value: 5 }]
+        }
       });
-      expect(values).toEqual([3, 2, 3]);
+      expect(values).toEqual([3, 2, 3, 4, 5]);
     });
   });
   

@@ -7,7 +7,7 @@ function Simulator(randomizer) {
   _.bindAll(this);
 }
 
-Simulator.prototype._pickValues = function(data, count, dateRange) {
+Simulator.prototype._pickValues = function(data, count) {
   var pickValue = _.bind(function() {
     var index = this._randomizer.get(data.length - 1);
     return data[index].value;
@@ -18,7 +18,15 @@ Simulator.prototype._pickValues = function(data, count, dateRange) {
 }
 
 Simulator.prototype._pickCycleTimeValues = function(opts) {
-  return this._pickValues(opts.cycleTimeData, opts.backlogSize);
+  var values = [];
+
+  var pickValues = _.bind(function(size, category) {
+    values = values.concat(this._pickValues(opts.cycleTimeData[category], opts.backlogSize[category]));    
+  }, this);
+  
+  _(opts.backlogSize).each(pickValues);
+
+  return values;
 }
 
 Simulator.prototype._pickWorkInProgressValues = function(opts) {

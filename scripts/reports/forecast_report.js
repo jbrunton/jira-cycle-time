@@ -8,6 +8,7 @@ var BaseReport = require('./base_report');
 var TimeChart = require('../ui/time_chart');
 var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
 var computeWipSeries = require('../transforms/compute_wip_series');
+var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
 var forecastReportTemplate = require('./templates/forecast_report.hbs');
 var Simulator = require('../simulator/simulator');
 var Randomizer = require('../simulator/randomizer');
@@ -34,11 +35,15 @@ ForecastReport.prototype.render = function(target) {
     var wipData = computeWipSeries(epics);
     
     
-    var backlogSizeInput = $(target).find('#forecast-backlog-size');    
+    var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
+    var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
+    var backlogSizeLargeInput = $(target).find('#forecast-backlog-size-large');    
     var exclusionFilterInput = $(target).find('#forecast-exclusion-filter');    
     var sampleStartDateInput = $(target).find('#forecast-sample-start-date');
     var sampleEndDateInput = $(target).find('#forecast-sample-end-date');
-    backlogSizeInput.blur(render);
+    backlogSizeSmallInput.blur(render);
+    backlogSizeMediumInput.blur(render);
+    backlogSizeLargeInput.blur(render);
     exclusionFilterInput.blur(render);
     sampleStartDateInput.blur(render);
     sampleEndDateInput.blur(render);
@@ -87,11 +92,16 @@ ForecastReport.prototype.render = function(target) {
       });
       timeChart.draw($(target).find('#time-chart').empty().get(0));      
     
-      var backlogSize = Number(backlogSizeInput.val());
       var simulator = new Simulator(new Randomizer());
+      var backlogSize = {
+        'S': Number(backlogSizeSmallInput.val()),
+        'M': Number(backlogSizeMediumInput.val()),
+        'L': Number(backlogSizeLargeInput.val())
+      };
+      var categorizedCycleTimeData = categorizeCycleTimeData(sampleCycleTimeData);
       var forecastResult = simulator.forecast({
         backlogSize: backlogSize,
-        cycleTimeData: sampleCycleTimeData,
+        cycleTimeData: categorizedCycleTimeData,
         workInProgressData: sampleWipData
       });
 
