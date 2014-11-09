@@ -6,7 +6,9 @@ var moment = require('moment');
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
 var TimeChart = require('../ui/time_chart');
-// var forecastReportTemplate = require('./templates/events_report.hbs');
+var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
+var computeWipSeries = require('../transforms/compute_wip_series');
+var forecastReportTemplate = require('./templates/forecast_report.hbs');
 
 module.exports = ForecastReport;
 
@@ -29,44 +31,29 @@ ForecastReport.prototype.render = function(target) {
   };
   
   var renderReport = function(epics) {
-    var timeChart = new TimeChart();
-    /*timeChart.addSeries({
-      key: 'wip',
-      color: 'blue',
-      axisOrientation: 'right',
-      data: [
-        {date: moment(), value: 2},
-        {date: moment().add(1, 'day'), value: 3},
-        {date: moment().add(2, 'days'), value: 1}
-      ]
-    });*/
-    var cycleTimeData = _(epics)
-      .filter(function(epic) {
-        return !!epic.completedDate;
-      })
-      .map(function(epic) {
-        return {
-          date: epic.completedDate,
-          value: epic.cycleTime,
-          epic: epic
-        };
-      })
-      .sortBy(function(value) {
-        return value.date.valueOf();
-      })
-      .value();
-    timeChart.addSeries({
-      key: 'cycle_time',
-      color: 'red',
-      circle: true,
-      axisOrientation: 'left',
-      data: cycleTimeData  
-    });
-    timeChart.draw(target);
-    // var events = computeEvents(epics);
-//     $(target).append(
-//       eventsReportTemplate({ events: events })
-//     );
+    var content = forecastReportTemplate();
+    $(target).append(content);
+    
+    function drawChart() {
+      var timeChart = new TimeChart();
+      var cycleTimeData = computeCycleTimeSeries(epics);
+      var wipData = computeWipSeries(epics);
+      timeChart.addSeries({
+        key: 'cycle_time',
+        color: 'red',
+        circle: true,
+        axisOrientation: 'left',
+        data: cycleTimeData  
+      });
+      timeChart.addSeries({
+        key: 'wip',
+        color: 'blue',
+        axisOrientation: 'right',
+        data: wipData
+      });
+      timeChart.draw($(target).find('#time-chart').get(0));      
+    }
+    drawChart();
   };
 
   return this.jiraClient
