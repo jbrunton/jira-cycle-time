@@ -123,4 +123,70 @@ describe ('JiraClient', function() {
       });
     });
   });
+  
+  describe ('#getFields', function() {
+    var promise, request;
+    
+    beforeEach(function() {
+      promise = client.getFields();
+      request = jasmine.Ajax.requests.mostRecent();
+    });
+    
+    it ("searches for fields in Jira", function() {
+      expect(request.method).toBe('GET');
+      expect(request.contentType()).toBe('application/json');
+      expect(request.url).toBe(domain + '/rest/api/2/field');      
+    });
+    
+    it ("returns the fields in the response", function(done) {
+      var expectedId = 10010;
+      var expectedName = 'Epic Link';
+
+      request.response(createSuccessfulResponse([
+        {
+          id: "customfield_10010",
+          name: expectedName,
+          custom: true,
+          schema: {
+            customId: expectedId
+          }
+        }
+      ]));
+    
+      promise.then(function(fields) {
+        expect(fields[0].name).toEqual(expectedName);
+        expect(fields[0].schema.customId).toEqual(expectedId);
+        done();
+      });
+    });
+    
+  });
+  
+  describe ('#getEpicLinkFieldId', function() {
+    it ("returns a promise for the Epic Link custom field id", function(done) {
+      spyOn(client, 'getFields').and.returnValue(Q([
+        {
+          id: "customfield_10001",
+          name: 'Some Field',
+          custom: true,
+          schema: {
+            customId: 10001
+          }
+        },
+        {
+          id: "customfield_10010",
+          name: 'Epic Link',
+          custom: true,
+          schema: {
+            customId: 10010
+          }
+        }
+      ]));
+      
+      client.getEpicLinkFieldId().then(function(id) {
+        expect(id).toBe(10010);
+        done();
+      });
+    });
+  });
 });

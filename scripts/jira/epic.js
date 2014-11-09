@@ -14,11 +14,6 @@ function Epic(jiraClient, json) {
 }
 
 Epic.prototype.load = function() {
-  var searchOpts = {
-    query: 'cf[' + Epic.EPIC_LINK_ID + ']=' + this.key,
-    expand: ['changelog']
-  };
-  
   var assignIssues = _.bind(function(issues) {
     this.issues = issues;
     this.startedDate = this.computeStartedDate();
@@ -27,8 +22,17 @@ Epic.prototype.load = function() {
     return Q(this);
   }, this);
   
-  return this.jiraClient.search(searchOpts)
-    .then(assignIssues);
+  var searchForIssues = _.bind(function(epicLinkId) {
+    var searchOpts = {
+      query: 'cf[' + epicLinkId + ']=' + this.key,
+      expand: ['changelog']
+    };
+    return this.jiraClient.search(searchOpts);
+  }, this);
+  
+  return this.jiraClient.getEpicLinkFieldId()
+    .then(searchForIssues)
+    .then(assignIssues)
 };
 
 Epic.prototype.computeStartedDate = function() {
@@ -82,5 +86,5 @@ Epic.fromJson = function(jiraClient, json) {
 };
 
 // TODO: look this up dynamically
-Epic.EPIC_LINK_ID = 10008;
+// Epic.EPIC_LINK_ID = 10008;
 // Epic.EPIC_LINK_ID = 10800;

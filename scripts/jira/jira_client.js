@@ -59,3 +59,25 @@ JiraClient.prototype.search = function(opts) {
 JiraClient.prototype.getEpics = function() {
   return this.search({ query: 'issuetype=Epic' });
 }
+
+JiraClient.prototype.getFields = function() {
+  return Q(
+    $.ajax({
+      type: 'GET',
+      url: this.domain + '/rest/api/2/field',
+      contentType: 'application/json'
+    })
+  );
+};
+
+JiraClient.prototype.getEpicLinkFieldId = function() {
+  return this.getFields()
+    .then(function(fields) {
+      return _(fields).find(function(field) {
+        return field.name == 'Epic Link';
+      });
+    })
+    .then(function(field) {
+      return field.schema.customId;
+    });
+};

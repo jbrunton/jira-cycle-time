@@ -52,16 +52,20 @@ describe ('Epic', function() {
         }
       });
       spyOn(jiraClient, 'search').and.returnValue(Q([issue]));
+      spyOn(jiraClient, 'getEpicLinkFieldId').and.returnValue(Q(10001));
       promise = epic.load();
       request = jasmine.Ajax.requests.mostRecent();
     });
     
-    it ("searches for issues in the epic", function() {
+    it ("searches for issues in the epic", function(done) {
       var expectedSearchOptions = {
-        query: 'cf[' + Epic.EPIC_LINK_ID + ']=DEMO-101',
+        query: 'cf[' + 10001 + ']=DEMO-101',
         expand: ['changelog']
       };
-      expect(jiraClient.search).toHaveBeenCalledWith(expectedSearchOptions);
+      promise.then(function() {
+        expect(jiraClient.search).toHaveBeenCalledWith(expectedSearchOptions);
+        done();
+      });
     });
     
     it ("assigns the issues loaded", function(done) {
