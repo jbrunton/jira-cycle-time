@@ -83,3 +83,4 @@ Epic.fromJson = function(jiraClient, json) {
 
 // TODO: look this up dynamically
 Epic.EPIC_LINK_ID = 10008;
+// Epic.EPIC_LINK_ID = 10800;

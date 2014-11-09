@@ -10,7 +10,7 @@ var JiraClient = require('./jira/jira_client');
 
 $(function() {
   var jiraClient = new JiraClient({
-    domain: 'https://jbrunton.atlassian.net'
+    domain: window.location.origin
   });
   var chartMenu = new ChartMenu({
     menuItems: [
