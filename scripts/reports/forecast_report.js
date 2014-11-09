@@ -24,23 +24,7 @@ function ForecastReport(jiraClient) {
 }
 
 ForecastReport.prototype.render = function(target) {
-  var indicator = $("<p>Loading epics...</p>").appendTo(target);
-  
-  var loadEpics = function(epics) {
-    var loaded = 0;
-    return Q.all(
-        _(epics).map(function(epic) {
-          return epic.load().then(function(epic) {
-            ++loaded;
-            indicator.text('Loaded ' + loaded + ' of ' + epics.length);
-            return epic;
-          });
-        }).value()
-      );
-  };
-  
   var renderReport = function(epics) {
-    indicator.remove();
     var content = forecastReportTemplate();
     $(target).append(content);
     
@@ -118,15 +102,7 @@ ForecastReport.prototype.render = function(target) {
     
     render();
   };
-  
-  var getEpics = function(rapidView) {
-    return rapidView.getEpics();
-  };
 
-  return this.jiraClient
-    .getCurrentRapidView()
-    .then(getEpics)
-    .then(loadEpics)
-    .then(renderReport);
+  return this.loadEpics(target).then(renderReport);  
 }
 

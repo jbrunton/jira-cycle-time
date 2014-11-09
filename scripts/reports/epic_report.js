@@ -18,28 +18,12 @@ function EpicReport(jiraClient) {
 }
 
 EpicReport.prototype.render = function(target) {
-  var getEpics = function(rapidView) {
-    return rapidView.getEpics();
-  };
-  
-  var loadEpics = function(epics) {
-    return Q.all(
-        _(epics).map(function(epic) {
-          return epic.load();
-        }).value()
-      );
-  };
-  
   var renderReport = function(epics) {
     $(target).append(
       epicReportTemplate({ epics: epics })
     );    
   };
-
-  return this.jiraClient
-    .getCurrentRapidView()
-    .then(getEpics)
-    .then(loadEpics)
-    .then(renderReport);
+  
+  return this.loadEpics(target).then(renderReport);  
 }
 

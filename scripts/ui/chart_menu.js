@@ -90,6 +90,8 @@ function clickHandlerFor(chart) {
     report.find('#ghx-chart-content').empty();
 
     var content = report.find('#ghx-chart-content');
+    content.append("<p id='loading-indicator'></p>");
+
     chart.report.render(content.get(0));
   }
 }

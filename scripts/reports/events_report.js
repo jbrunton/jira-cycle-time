@@ -19,18 +19,6 @@ function EventsReport(jiraClient) {
 }
 
 EventsReport.prototype.render = function(target) {
-  var getEpics = function(rapidView) {
-    return rapidView.getEpics();
-  };
-  
-  var loadEpics = function(epics) {
-    return Q.all(
-        _(epics).map(function(epic) {
-          return epic.load();
-        }).value()
-      );
-  };
-  
   var renderReport = function(epics) {
     var events = computeEvents(epics);
     $(target).append(
@@ -38,10 +26,6 @@ EventsReport.prototype.render = function(target) {
     );
   };
 
-  return this.jiraClient
-    .getCurrentRapidView()
-    .then(getEpics)
-    .then(loadEpics)
-    .then(renderReport);
+  return this.loadEpics(target).then(renderReport);
 }
 
