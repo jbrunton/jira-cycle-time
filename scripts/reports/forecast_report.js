@@ -118,9 +118,14 @@ ForecastReport.prototype.render = function(target) {
     
     render();
   };
+  
+  var getEpics = function(rapidView) {
+    return rapidView.getEpics();
+  };
 
   return this.jiraClient
-    .getEpics()
+    .getCurrentRapidView()
+    .then(getEpics)
     .then(loadEpics)
     .then(renderReport);
 }

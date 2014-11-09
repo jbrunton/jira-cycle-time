@@ -19,6 +19,10 @@ function EventsReport(jiraClient) {
 }
 
 EventsReport.prototype.render = function(target) {
+  var getEpics = function(rapidView) {
+    return rapidView.getEpics();
+  };
+  
   var loadEpics = function(epics) {
     return Q.all(
         _(epics).map(function(epic) {
@@ -35,7 +39,8 @@ EventsReport.prototype.render = function(target) {
   };
 
   return this.jiraClient
-    .getEpics()
+    .getCurrentRapidView()
+    .then(getEpics)
     .then(loadEpics)
     .then(renderReport);
 }

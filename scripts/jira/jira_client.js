@@ -4,6 +4,7 @@ var Q = require('q');
 
 var Issue = require('./issue');
 var Epic = require('./epic');
+var RapidView = require('./rapid_view');
 var Validator = require('../shared/validator');
 
 module.exports = JiraClient;
@@ -56,9 +57,9 @@ JiraClient.prototype.search = function(opts) {
   });
 }
 
-JiraClient.prototype.getEpics = function() {
-  return this.search({ query: 'issuetype=Epic' });
-}
+// JiraClient.prototype.getEpics = function() {
+//   return this.search({ query: 'issuetype=Epic' });
+// }
 
 JiraClient.prototype.getFields = function() {
   return Q(
@@ -81,3 +82,36 @@ JiraClient.prototype.getEpicLinkFieldId = function() {
       return field.schema.customId;
     });
 };
+
+JiraClient.prototype.getRapidViews = function() {
+  var createRapidView = _.bind(function(json) {
+    return new RapidView(this, json);
+  }, this);
+  
+  return Q(
+    $.ajax({
+      type: 'GET',
+      url: this.domain + '/rest/greenhopper/1.0/rapidviews/list',
+      contentType: 'application/json'
+    })
+  ).then(function(response) {
+    return _(response.views)
+      .map(createRapidView)
+      .value();
+  });
+};
+
+//TODO: test this
+JiraClient.prototype.getRapidViewById = function(rapidViewId) {
+  return this.getRapidViews().then(function(views) {
+    return _(views).find(function(view) {
+      return view.id == rapidViewId;
+    });
+  });
+}
+
+//TODO: test this
+JiraClient.prototype.getCurrentRapidView = function() {
+  var rapidViewId = /rapidView=(\d*)/.exec(window.location.href)[1];
+  return this.getRapidViewById(rapidViewId);
+}

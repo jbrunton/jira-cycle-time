@@ -86,43 +86,43 @@ describe ('JiraClient', function() {
     });
   });
   
-  describe ('#getEpics', function() {
-    var promise, request;
-    
-    beforeEach(function() {
-      promise = client.getEpics();
-      request = jasmine.Ajax.requests.mostRecent();
-    });
-    
-    it ("searches for epics in Jira", function() {
-      expect(request.method).toBe('GET');
-      expect(request.contentType()).toBe('application/json');
-      expect(request.url).toBe(domain + '/rest/api/2/search?jql=issuetype=Epic');      
-    });
-    
-    it ("returns the epics in the response", function(done) {
-      var expectedKey = 'DEMO-101';
-      var expectedSummary = 'Some Epic';
-
-      request.response(createSuccessfulResponse({
-        issues: [{
-          key: expectedKey,
-          fields: {
-            summary: expectedSummary,
-            issuetype: {
-              name: 'Epic'
-            }
-          }
-        }]
-      }));
-    
-      promise.then(function(epics) {
-        expect(epics[0].key).toEqual(expectedKey);
-        expect(epics[0].summary).toEqual(expectedSummary);
-        done();
-      });
-    });
-  });
+  // describe ('#getEpics', function() {
+  //   var promise, request;
+  //
+  //   beforeEach(function() {
+  //     promise = client.getEpics();
+  //     request = jasmine.Ajax.requests.mostRecent();
+  //   });
+  //
+  //   it ("searches for epics in Jira", function() {
+  //     expect(request.method).toBe('GET');
+  //     expect(request.contentType()).toBe('application/json');
+  //     expect(request.url).toBe(domain + '/rest/api/2/search?jql=issuetype=Epic');
+  //   });
+  //
+  //   it ("returns the epics in the response", function(done) {
+  //     var expectedKey = 'DEMO-101';
+  //     var expectedSummary = 'Some Epic';
+  //
+  //     request.response(createSuccessfulResponse({
+  //       issues: [{
+  //         key: expectedKey,
+  //         fields: {
+  //           summary: expectedSummary,
+  //           issuetype: {
+  //             name: 'Epic'
+  //           }
+  //         }
+  //       }]
+  //     }));
+  //
+  //     promise.then(function(epics) {
+  //       expect(epics[0].key).toEqual(expectedKey);
+  //       expect(epics[0].summary).toEqual(expectedSummary);
+  //       done();
+  //     });
+  //   });
+  // });
   
   describe ('#getFields', function() {
     var promise, request;
@@ -185,6 +185,43 @@ describe ('JiraClient', function() {
       
       client.getEpicLinkFieldId().then(function(id) {
         expect(id).toBe(10010);
+        done();
+      });
+    });
+  });
+  
+  describe ('#getRapidViews', function() {
+    var promise, request;
+    
+    beforeEach(function() {
+      promise = client.getRapidViews();
+      request = jasmine.Ajax.requests.mostRecent();
+    });
+    
+    it ("requests all rapid views from Jira", function() {
+      expect(request.method).toBe('GET');
+      expect(request.contentType()).toBe('application/json');
+      expect(request.url).toBe(domain + '/rest/greenhopper/1.0/rapidviews/list');    
+    });
+    
+    it ("returns a promise which resolves to a list of rapidviews", function(done) {
+      request.response(createSuccessfulResponse({
+        views: [
+          {
+            id: 101,
+            name: "Some Project",
+            filter: {
+              id: 10001,
+              name: "Filter for Some Project",
+              query: 'project = "Another Project" ORDER BY Rank ASC'
+            }
+          }
+        ]
+      }));
+    
+      promise.then(function(rapidViews) {
+        expect(rapidViews[0].name).toEqual("Some Project");
+        expect(rapidViews[0].id).toEqual(101);
         done();
       });
     });
