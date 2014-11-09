@@ -44,7 +44,7 @@ describe ('JiraClient', function() {
     it ("searches for Jira issues", function() {
       expect(request.method).toBe('GET');
       expect(request.contentType()).toBe('application/json');
-      expect(request.url).toBe(domain + '/rest/api/2/search');      
+      expect(request.url).toBe(domain + '/rest/api/2/search?maxResults=9999');      
     });      
     
     it ("returns the issues in the response", function(done) {
@@ -73,7 +73,7 @@ describe ('JiraClient', function() {
     it ("searches by the given query, if one is provided", function() {
       client.search({ query: 'issuetype=Epic' })
       request = jasmine.Ajax.requests.mostRecent();
-      expect(request.url).toBe(domain + '/rest/api/2/search?jql=issuetype=Epic');
+      expect(request.url).toBe(domain + '/rest/api/2/search?maxResults=9999&jql=issuetype=Epic');
     });
     
     it ("expands the given query parameters, if provided", function() {
@@ -82,7 +82,7 @@ describe ('JiraClient', function() {
         expand: ['transitions', 'changelog']
       });
       request = jasmine.Ajax.requests.mostRecent();
-      expect(request.url).toBe(domain + '/rest/api/2/search?expand=transitions,changelog&jql=issuetype=Epic');
+      expect(request.url).toBe(domain + '/rest/api/2/search?maxResults=9999&expand=transitions,changelog&jql=issuetype=Epic');
     });
   });
   

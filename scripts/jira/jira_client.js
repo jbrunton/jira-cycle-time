@@ -18,21 +18,14 @@ function JiraClient(opts) {
 }
 
 JiraClient.prototype.search = function(opts) {
-  var url = this.domain + '/rest/api/2/search';
+  var url = this.domain + '/rest/api/2/search?maxResults=9999';
   if (opts) {
-    if (opts.query || opts.expand) {
-      url += '?';
-    }
-    
     if (opts.expand) {
-      url += 'expand=' + opts.expand.join();
+      url += '&expand=' + opts.expand.join();
     }
     
     if (opts.query) {
-      if (opts.expand) {
-        url += '&';
-      }
-      url += 'jql=' + opts.query;
+      url += '&jql=' + opts.query;
     }
   }
   

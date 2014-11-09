@@ -27,7 +27,7 @@ describe ('RapidView', function() {
     it ("requests epics for the rapidview board", function() {
       expect(request.method).toBe('GET');
       expect(request.contentType()).toBe('application/json');
-      expect(request.url).toBe(jiraClient.domain + '/rest/api/2/search?jql=(issuetype=Epic) AND (' + rapidViewFilter + ')');    
+      expect(request.url).toBe(jiraClient.domain + '/rest/api/2/search?maxResults=9999&jql=(issuetype=Epic) AND (' + rapidViewFilter + ')');    
     });
     
     xit ("returns the epics for the board", function() {
