@@ -1,0 +1,49 @@
+{{#each this}}
+
+<h3>{{summary}}</h3>
+
+<table class="aui">
+  <tr>
+    <td width="10%" class="ghx-nowrap ghx-minimal">
+      <a href="/browse/{{key}}">
+        {{key}}
+      </a>
+    </td>
+    <th width="30%">
+      {{summary}}
+    </th>
+    <th width="22%">
+      {{date startedDate}}
+    </th>
+    <th width="22%">
+      {{date completedDate}}
+    </th>
+    <th width="16%" class="ghx-right">
+      {{cycle_time}}
+    </th>
+  </tr>
+
+  {{#each issues}}
+  <tr>
+    <td class="ghx-nowrap ghx-minimal">
+      <a href="/browse/{{key}}">
+        {{key}}
+      </a>
+    </td>
+    <td>
+      {{summary}}
+    </td>
+    <td>
+      {{date startedDate}}
+    </td>
+    <td>
+      {{date completedDate}}
+    </td>
+    <td class="ghx-right">
+      {{cycle_time}}
+    </td>
+  </tr>
+  {{/each}}
+
+</table>
+{{/each}}

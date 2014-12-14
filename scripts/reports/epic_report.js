@@ -4,6 +4,7 @@ var Q = require('q');
 
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
+var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
 var epicReportTemplate = require('./templates/epic_report.hbs');
 
 module.exports = EpicReport;
@@ -19,8 +20,9 @@ function EpicReport(jiraClient) {
 
 EpicReport.prototype.render = function(target) {
   var renderReport = function(epics) {
+    var epicsBySize = categorizeCycleTimeData(epics);
     $(target).append(
-      epicReportTemplate({ epics: epics })
+      epicReportTemplate(epicsBySize)
     );    
   };
   
