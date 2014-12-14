@@ -92,6 +92,25 @@ describe ('ChartMenu', function() {
       expect(customChartMenuItem()).toExist();
       expect(menuItems()).toEqual([JIRA_CHART_MENU_ITEM_ID, 'other-id', CUSTOM_CHART_MENU_ITEM_ID]);
     });
+    
+    it ("removes existing click handlers when reordering items", function() {
+      // arrange
+      var chartNav = createJiraChartNav();
+      dom.append(chartNav);
+      chartMenu.bind(dom);
+      
+      spyOn(chart.report, 'render');
+      
+      // act
+      // appending other jira items causes the menu to reorder the items
+      chartNav.html(createJiraChartMenuItem());
+      chartNav.append(createJiraChartMenuItem('other-id'));
+
+      customChartMenuItem().click();
+      
+      // assert
+      expect(chart.report.render.calls.count()).toEqual(1);
+    });
   });
   
   describe ("#click", function() {

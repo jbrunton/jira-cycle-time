@@ -47,11 +47,12 @@ ChartMenu.prototype._appendMenuItem = function(chart) {
   var menuItem = this._findMenuItemFor(chart);
   if (menuItem.size() > 0) {
     chartNav.append(menuItem);
+    menuItem.off('click.jira-cycle-time');
   } else {
     menuItem = $(menuItemTemplate(chart));
     chartNav.append(menuItem);
   }
-  menuItem.click(clickHandlerFor(chart));
+  menuItem.on('click.jira-cycle-time', clickHandlerFor(chart));
 }
 
 ChartMenu.prototype._findMenuItemFor = function(chart) {
