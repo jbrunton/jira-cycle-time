@@ -20,7 +20,7 @@ Class(ForecastReport).extends(BaseReport);
 function ForecastReport(jiraClient) {
   BaseReport.call(this, {
     jiraClient: jiraClient,
-    title: 'Forecast Report'
+    title: 'Epic Forecasting'
   });
 }
 
