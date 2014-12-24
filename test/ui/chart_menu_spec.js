@@ -134,6 +134,9 @@ describe ('ChartMenu', function() {
       
       expect(dom.find('#ghx-chart-message')).toBeEmpty();
       expect(dom.find('#ghx-chart-intro')).toBeEmpty();
+      expect(dom.find('#ghx-chart-selector')).toBeEmpty();
+      expect(dom.find('#ghx-chart-snapshot')).toBeEmpty();
+      expect(dom.find('#ghx-chart-header-secondary')).not.toBeVisible();
     });
     
     it ("renders the custom chart", function() {
@@ -142,6 +145,7 @@ describe ('ChartMenu', function() {
       
       customChartMenuItem().click();
       
+      expect(dom.find('#ghx-chart-title h2').text()).toBe('Some Chart');
       expect(dom.find('#ghx-chart-content').text()).toBe('Custom Content');
     });
   });

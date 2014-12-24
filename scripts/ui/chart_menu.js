@@ -88,7 +88,13 @@ function clickHandlerFor(chart) {
     var report = $(this).closest('#ghx-report');
     report.find('#ghx-chart-message').empty();
     report.find('#ghx-chart-intro').empty();
+    report.find('#ghx-chart-selector').empty();
+    report.find('#ghx-chart-snapshot').empty();
     report.find('#ghx-chart-content').empty();
+    report.find('#ghx-chart-header-secondary').hide();
+    
+    var title = report.find('#ghx-chart-title h2');
+    title.text(chart.report.title);
 
     var content = report.find('#ghx-chart-content');
     content.append("<p id='loading-indicator'></p>");
