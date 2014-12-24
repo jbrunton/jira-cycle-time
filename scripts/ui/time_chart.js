@@ -145,6 +145,15 @@ TimeChart.prototype.draw = function(target) {
 
           var left = d3.event.clientX + 7;
           var top = d3.event.clientY - dialog.height() / 2;
+          
+          if (left + 300 > w - 10) {
+            // align to the left of the data point if the dialog will otherwise go off the edge of the chart
+            left -= 315;
+            dialog.find('#left-arrow').remove();
+          } else {
+            dialog.find('#right-arrow').remove();
+          }
+          
           dialog.offset({ left: left, top: top});
 
           var arrowTop = (dialog.height() - arrow.height()) / 2;
@@ -161,5 +170,16 @@ TimeChart.prototype.draw = function(target) {
 		svg.selectAll('.axis path, .axis path')
 		  .style({fill: 'none', stroke: 'black', 'shape-rendering': 'crispEdges'});
 }
+
+function hideInlineDialogs(e) {
+  var wasDialog = $(e.target).closest(".jira-reporting.aui-inline-dialog").length > 0;
+  var wasDialogTrigger = $(e.target).closest(".cycle_time.aui-inline-dialog-trigger").length > 0;
+  
+  if (!(wasDialog || wasDialogTrigger)) {
+    $(".jira-reporting.aui-inline-dialog").hide();
+  }
+}
+
+$("body").on('click', hideInlineDialogs);
 
 module.exports = TimeChart;
