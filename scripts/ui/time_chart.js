@@ -162,4 +162,15 @@ TimeChart.prototype.draw = function(target) {
 		  .style({fill: 'none', stroke: 'black', 'shape-rendering': 'crispEdges'});
 }
 
+function hideInlineDialogs(e) {
+  var wasDialog = $(e.target).closest(".jira-reporting.aui-inline-dialog").length > 0;
+  var wasDialogTrigger = $(e.target).closest(".cycle_time.aui-inline-dialog-trigger").length > 0;
+  
+  if (!(wasDialog || wasDialogTrigger)) {
+    $(".jira-reporting.aui-inline-dialog").hide();
+  }
+}
+
+$("body").on('click', hideInlineDialogs);
+
 module.exports = TimeChart;
