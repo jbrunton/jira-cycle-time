@@ -145,6 +145,15 @@ TimeChart.prototype.draw = function(target) {
 
           var left = d3.event.clientX + 7;
           var top = d3.event.clientY - dialog.height() / 2;
+          
+          if (left + 300 > w - 10) {
+            // align to the left of the data point if the dialog will otherwise go off the edge of the chart
+            left -= 315;
+            dialog.find('#left-arrow').remove();
+          } else {
+            dialog.find('#right-arrow').remove();
+          }
+          
           dialog.offset({ left: left, top: top});
 
           var arrowTop = (dialog.height() - arrow.height()) / 2;
