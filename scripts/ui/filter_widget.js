@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var $ = require('jquery');
 var moment = require('moment');
 
 var Validator = require('../shared/validator');
