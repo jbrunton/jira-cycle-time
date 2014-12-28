@@ -12,6 +12,7 @@ var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data'
 var forecastReportTemplate = require('./templates/forecast_report.hbs');
 var Simulator = require('../simulator/simulator');
 var Randomizer = require('../simulator/randomizer');
+var FilterWidget = require('../ui/filter_widget');
 
 module.exports = ForecastReport;
 
@@ -29,52 +30,30 @@ ForecastReport.prototype.render = function(target) {
     var content = forecastReportTemplate();
     $(target).append(content);
     
+    var filter = new FilterWidget({
+      blur: render
+    });
+    filter.bind($(target).find('#forecast-filter'));
+    
     //var cycleTimeData = computeCycleTimeSeries(epics);
     //var wipData = computeWipSeries(epics);
     
     var wipData = computeWipSeries(epics);
     
-    
     var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
     var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
     var backlogSizeLargeInput = $(target).find('#forecast-backlog-size-large');    
-    var exclusionFilterInput = $(target).find('#forecast-exclusion-filter');    
-    var sampleStartDateInput = $(target).find('#forecast-sample-start-date');
-    var sampleEndDateInput = $(target).find('#forecast-sample-end-date');
     backlogSizeSmallInput.blur(render);
     backlogSizeMediumInput.blur(render);
     backlogSizeLargeInput.blur(render);
-    exclusionFilterInput.blur(render);
-    sampleStartDateInput.blur(render);
-    sampleEndDateInput.blur(render);
+    
     
     function render() {
-      var startDate = wipData[0].date.clone(),
-        endDate = wipData[wipData.length - 1].date.clone();
-        
-      var sampleStartDate = moment(sampleStartDateInput.val()),
-        sampleEndDate = moment(sampleEndDateInput.val());
-      if (sampleStartDate.isValid()) {
-        startDate = sampleStartDate;
-      }
-      if (sampleEndDate.isValid()) {
-        endDate = sampleEndDate;
-      }
-        
-      var dateExclusionFilter = function(datum) {
-        return !datum.date.isBefore(startDate)
-          && !datum.date.isAfter(endDate);
-      };
-      var epicExclusionKeys = exclusionFilterInput.val().split(',');
-      var epicExclusionFilter = function(epic) {
-        return !_(epicExclusionKeys).contains(epic.key);
-      };
-      
-      var includedEpics = _(epics).filter(epicExclusionFilter).value();
+      var includedEpics = _(epics).filter(filter.includeEpic).value();
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
       
-      var sampleCycleTimeData = _(cycleTimeData).filter(dateExclusionFilter).value();
-      var sampleWipData = _(wipData).filter(dateExclusionFilter).value();
+      var sampleCycleTimeData = _(cycleTimeData).filter(filter.includeDatedItem).value();
+      var sampleWipData = _(wipData).filter(filter.includeDatedItem).value();
       
       var timeChart = new TimeChart();
       timeChart.addSeries({
