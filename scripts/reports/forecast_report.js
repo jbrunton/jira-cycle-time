@@ -26,29 +26,11 @@ function ForecastReport(jiraClient) {
 }
 
 ForecastReport.prototype.render = function(target) {
-  var renderReport = function(epics) {
+  var renderReport = _.bind(function(epics) {
     var content = forecastReportTemplate();
     $(target).append(content);
     
-    var filter = new FilterWidget({
-      blur: render
-    });
-    filter.bind($(target).find('#forecast-filter'));
-    
-    //var cycleTimeData = computeCycleTimeSeries(epics);
-    //var wipData = computeWipSeries(epics);
-    
-    var wipData = computeWipSeries(epics);
-    
-    var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
-    var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
-    var backlogSizeLargeInput = $(target).find('#forecast-backlog-size-large');    
-    backlogSizeSmallInput.blur(render);
-    backlogSizeMediumInput.blur(render);
-    backlogSizeLargeInput.blur(render);
-    
-    
-    function render() {
+    var drawChart = _.bind(function() {
       var includedEpics = _(epics).filter(filter.includeEpic).value();
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
       
@@ -71,27 +53,58 @@ ForecastReport.prototype.render = function(target) {
       });
       timeChart.draw($(target).find('#time-chart').empty().get(0));      
     
-      var simulator = new Simulator(new Randomizer());
       var backlogSize = {
         'S': Number(backlogSizeSmallInput.val()),
         'M': Number(backlogSizeMediumInput.val()),
         'L': Number(backlogSizeLargeInput.val())
       };
       var categorizedCycleTimeData = categorizeCycleTimeData(sampleCycleTimeData);
-      var forecastResult = simulator.forecast({
-        backlogSize: backlogSize,
-        cycleTimeData: categorizedCycleTimeData,
-        workInProgressData: sampleWipData
-      });
-
-      var forecastTemplate = require('./templates/forecast_output.hbs');
+      
       var forecastSection = $(target).find('#forecast-output');
-      forecastSection.html(forecastTemplate(forecastResult));
-    }
+      forecastSection.empty();
+      
+      if (this._validateBacklog(forecastSection, backlogSize, categorizedCycleTimeData)) {
+        var simulator = new Simulator(new Randomizer());
+        var forecastResult = simulator.forecast({
+          backlogSize: backlogSize,
+          cycleTimeData: categorizedCycleTimeData,
+          workInProgressData: sampleWipData
+        });        
+        var forecastTemplate = require('./templates/forecast_output.hbs');
+        forecastSection.html(forecastTemplate(forecastResult));
+      }      
+    }, this);
     
-    render();
-  };
+    var filter = new FilterWidget({
+      blur: drawChart
+    });
+    filter.bind($(target).find('#forecast-filter'));
+    
+    var wipData = computeWipSeries(epics);
+    
+    var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
+    var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
+    var backlogSizeLargeInput = $(target).find('#forecast-backlog-size-large');    
+    
+    backlogSizeSmallInput.blur(drawChart);
+    backlogSizeMediumInput.blur(drawChart);
+    backlogSizeLargeInput.blur(drawChart);
+    
+    drawChart();
+  }, this);
 
   return this.loadEpics(target).then(renderReport);  
 }
+
+ForecastReport.prototype._validateBacklog = function(forecastSection, backlogSize, categorizedCycleTimeData) {
+  var validBacklog = true;
+  _(['S', 'M', 'L']).each(function(epicSize) {
+    if (backlogSize[epicSize] > 0 && categorizedCycleTimeData[epicSize].length === 0) {
+      validBacklog = false;
+      forecastSection.append("<div class='ghx-error'>Cannot forecast for [" + epicSize + "] epics as there were none in the sample set</div>");          
+    }
+  });
+  return validBacklog;
+};
+
 
