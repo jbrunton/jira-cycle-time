@@ -1,4 +1,5 @@
 var $ = require('jquery');
+require('jquery.cookie');
 
 var ChartMenu = require('./ui/chart_menu');
 var ChartMenuItem = require('./ui/chart_menu_item');
@@ -8,6 +9,8 @@ var JiraClient = require('./jira/jira_client');
 
 
 $(function() {
+  $.cookie.json = true;
+  
   var jiraClient = new JiraClient({
     domain: window.location.origin
   });

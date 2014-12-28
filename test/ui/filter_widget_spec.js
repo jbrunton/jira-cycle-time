@@ -1,3 +1,4 @@
+require('jquery.cookie');
 var moment = require('moment');
 var FilterWidget = require('../../scripts/ui/filter_widget');
 var Validator = require('../../scripts/shared/validator');
@@ -7,6 +8,7 @@ describe ('FilterWidget', function() {
   
   beforeEach(function() {
     blur = jasmine.createSpy('blur');
+    spyOn($, 'cookie');
     filter = new FilterWidget({
       blur: blur
     });
@@ -36,22 +38,48 @@ describe ('FilterWidget', function() {
       expect(dom).toContainElement('input#forecast-sample-end-date');
     });
     
-    it ("calls the blur function when the blur event fires on the filter input", function() {
+    it ("reads the filter cookie", function() {
+      $.cookie.and.returnValue({
+        excludedKeys: 'DEMO-101',
+        sampleStartDate: '1 Jul 2014',
+        sampleEndDate: '1 Sep 2014'
+      });
+      
       filter.bind(dom);
+      
+      expect(dom.find('input#forecast-exclusion-filter').val()).toBe('DEMO-101');
+      expect(dom.find('input#forecast-sample-start-date').val()).toBe('1 Jul 2014');
+      expect(dom.find('input#forecast-sample-end-date').val()).toBe('1 Sep 2014');
+    });
+    
+    it ("calls the blur function and saves the filter when the blur event fires on the filter input", function() {
+      filter.bind(dom);
+
       dom.find('input#forecast-exclusion-filter').val('DEMO-101').blur();
+
       expect(blur).toHaveBeenCalled();
+      var expectedCookie = { excludedKeys: 'DEMO-101', sampleStartDate: '', sampleEndDate: '' };
+      expect($.cookie).toHaveBeenCalledWith('jira-cycle-time-filter', expectedCookie, { expires: 9999 });
     });
     
-    it ("calls the blur function when the blur event fires on the start date input", function() {
+    it ("calls the blur function and saves the filter when the blur event fires on the start date input", function() {
       filter.bind(dom);      
+
       dom.find('input#forecast-sample-start-date').val('1 Jul 2014').blur();
+
       expect(blur).toHaveBeenCalled();
+      var expectedCookie = { excludedKeys: '', sampleStartDate: '1 Jul 2014', sampleEndDate: '' };
+      expect($.cookie).toHaveBeenCalledWith('jira-cycle-time-filter', expectedCookie, { expires: 9999 });
     });
     
-    it ("calls the blur function when the blur event fires on the end date input", function() {
-      filter.bind(dom);      
+    it ("calls the blur function and saves the filter when the blur event fires on the end date input", function() {
+      filter.bind(dom);
+
       dom.find('input#forecast-sample-end-date').val('1 Sep 2014').blur();
+
       expect(blur).toHaveBeenCalled();
+      var expectedCookie = { excludedKeys: '', sampleStartDate: '', sampleEndDate: '1 Sep 2014' };
+      expect($.cookie).toHaveBeenCalledWith('jira-cycle-time-filter', expectedCookie, { expires: 9999 });
     });
   });
   

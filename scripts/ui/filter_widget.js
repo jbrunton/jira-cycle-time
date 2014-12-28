@@ -25,9 +25,25 @@ FilterWidget.prototype.bind = function(dom) {
   var blur = _.bind(function(e) {
     this._refreshFilter();
     this._blurCallback();
+    $.cookie('jira-cycle-time-filter',
+      {
+        excludedKeys: this._widget.find('#forecast-exclusion-filter').val(),
+        sampleStartDate: this._widget.find('#forecast-sample-start-date').val(),
+        sampleEndDate: this._widget.find('#forecast-sample-end-date').val()
+      },
+      { expires: 9999 }
+    );
   }, this);
   
   this._widget = $(dom).html(filterWidgetTemplate());
+  
+  var cookie = $.cookie('jira-cycle-time-filter');
+  if (cookie) {
+    this._widget.find('#forecast-exclusion-filter').val(cookie.excludedKeys);
+    this._widget.find('#forecast-sample-start-date').val(cookie.sampleStartDate);
+    this._widget.find('#forecast-sample-end-date').val(cookie.sampleEndDate);
+  }
+  
   $(dom).find('input').blur(blur);
 }
 
