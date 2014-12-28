@@ -4,6 +4,7 @@ var Q = require('q');
 
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
+var FilterWidget = require('../ui/filter_widget');
 var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
 var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
 var epicReportTemplate = require('./templates/epic_report.hbs');
@@ -20,18 +21,30 @@ function EpicReport(jiraClient) {
 }
 
 EpicReport.prototype.render = function(target) {
-  var renderReport = function(epics) {
-    var epicsBySize = categorizeCycleTimeData(computeCycleTimeSeries(epics));
-    _(['S', 'M', 'L']).each(function(size) {
-      epicsBySize[size] = _.map(epicsBySize[size], function(x) {
-        return x.epic;
-      });
-    });
-    $(target).append(
-      epicReportTemplate(epicsBySize)
-    );    
-  };
+  function renderReport(epics) {
+    $(target).html("<div id='filter-holder'></div><div id='epic-list-holder'></div>");
   
+    var renderEpics = function() {
+      var includedEpics = _(epics).filter(filter.includeEpic).value();
+      var epicsBySize = categorizeCycleTimeData(computeCycleTimeSeries(includedEpics));
+      _(['S', 'M', 'L']).each(function(size) {
+        epicsBySize[size] = _.map(epicsBySize[size], function(x) {
+          return x.epic;
+        });
+      });
+      $(target).find('#epic-list-holder').html(
+        epicReportTemplate(epicsBySize)
+      );
+    };
+  
+    var filter = new FilterWidget({
+      blur: renderEpics
+    });
+    filter.bind($(target).find('#filter-holder'));    
+    
+    renderEpics();
+  }
+
   return this.loadEpics(target).then(renderReport);  
 }
 
