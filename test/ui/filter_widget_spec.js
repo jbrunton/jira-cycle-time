@@ -106,6 +106,12 @@ describe ('FilterWidget', function() {
       exclusionFilterInput().val('DEMO-101').blur();
       expect(filter.includeEpic({ key: 'DEMO-101' })).toBe(false);
     });
+    
+    it ("returns false if the completion date falls outside the sample range", function() {
+      filter.bind(dom);
+      sampleStartDateInput().val('1 Jul 2014').blur();
+      expect(filter.includeEpic({ key: 'DEMO-102', completedDate: moment('1 Jun 2014') })).toBe(false);
+    });
   });
   
   describe ('#includeDatedItem', function() {

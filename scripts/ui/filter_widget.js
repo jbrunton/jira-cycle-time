@@ -39,13 +39,18 @@ FilterWidget.prototype.bind = function(dom) {
 }
 
 FilterWidget.prototype.includeEpic = function(epic) {
-  return !_(this._excludedKeys).contains(epic.key);
+  return !_(this._excludedKeys).contains(epic.key)
+    && this._includeDatedItem(epic, 'completedDate');
 }
 
 FilterWidget.prototype.includeDatedItem = function(item) {
-  return (!this._sampleStart.isValid() || this._sampleStart.isBefore(item.date))
-    && (!this._sampleEnd.isValid() || this._sampleEnd.isAfter(item.date));
+  return this._includeDatedItem(item, 'date');
 }
+
+FilterWidget.prototype._includeDatedItem = function(item, dateField) {
+return (!this._sampleStart.isValid() || this._sampleStart.isBefore(item[dateField]))
+  && (!this._sampleEnd.isValid() || this._sampleEnd.isAfter(item[dateField]));  
+};
 
 FilterWidget.prototype._inflateLayout = function(dom) {
   var widget = $(dom).html(filterWidgetTemplate());
