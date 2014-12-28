@@ -27,22 +27,24 @@ describe ('EpicReport', function() {
   });
   
   describe ('render', function() {
+    var epic;
+    
+    beforeEach(function() {
+      epic = {
+        key: 'DEMO-101',
+        completedDate: moment('1 Jun 2014')
+      };
+      spyOn(report, 'loadEpics').and.returnValue(Q([epic]));
+    });
+    
     it ("renders a list of issues", function(done) {
-      var expectedEpics = [{
-        key: 'DEMO-101', completedDate: moment()
-      }];
-      spyOn(report, 'loadEpics').and.returnValue(Q(expectedEpics));
       report.render(dom).then(function() {      
-        expect(dom.find('#epic-list-holder')).toContainText('DEMO-101');
+        expect(dom.find('#epic-list-holder')).toContainText(epic.key);
         done();
       });
     });
     
     it ("adds a filter widget", function(done) {
-      var expectedEpics = [{
-        key: 'DEMO-101', completedDate: moment()
-      }];
-      spyOn(report, 'loadEpics').and.returnValue(Q(expectedEpics));
       report.render(dom).then(function() {      
         expect(dom).toContainElement('#filter-holder .filter-widget');
         done();
@@ -50,25 +52,17 @@ describe ('EpicReport', function() {
     });
     
     it ("filters the epics by the exclusion filter", function(done) {
-      var expectedEpics = [{
-        key: 'DEMO-101', completedDate: moment()
-      }];
-      spyOn(report, 'loadEpics').and.returnValue(Q(expectedEpics));
       report.render(dom).then(function() {
-        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val('DEMO-101').blur();
-        expect(dom.find('#epic-list-holder')).not.toContainText('DEMO-101');
+        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epic.key).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epic.key);
         done();
       });      
     });
 
     it ("filters the epics by the date completed", function(done) {
-      var expectedEpics = [{
-        key: 'DEMO-101', completedDate: moment('1 Jun 2014')
-      }];
-      spyOn(report, 'loadEpics').and.returnValue(Q(expectedEpics));
       report.render(dom).then(function() {
-        dom.find('#' + FilterWidget.SAMPLE_START_DATE_ID).val('1 Jul 2014').blur();
-        expect(dom.find('#epic-list-holder')).not.toContainText('DEMO-101');
+        dom.find('#' + FilterWidget.SAMPLE_START_DATE_ID).val(epic.completedDate.clone().add(1, 'day')).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epic.summary);
         done();
       });      
     });
