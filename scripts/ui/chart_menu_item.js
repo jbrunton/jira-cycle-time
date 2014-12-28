@@ -7,7 +7,8 @@ function ChartMenuItem(opts) {
   new Validator()
     .requires(opts, 'opts')
     .requires(opts.report, 'opts.report')
-    .requires(opts.menuItemId, 'opts.menuItemId');
+    .requires(opts.menuItemId, 'opts.menuItemId')
+    .requires(opts.tooltip, 'opts.tooltip');
   
   _.assign(this, opts);
 }

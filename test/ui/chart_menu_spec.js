@@ -12,6 +12,7 @@ describe ('ChartMenu', function() {
   beforeEach (function() {
     chart = new ChartMenuItem({
       menuItemId: CUSTOM_CHART_MENU_ITEM_ID,
+      tooltip: 'Some tooltip',
       report: {
         title: 'Some Chart',
         render: function(content) {
@@ -55,6 +56,7 @@ describe ('ChartMenu', function() {
       chartMenu.bind(dom);
       expect(customChartMenuItem()).toExist();
       expect(customChartMenuItem()).toContainText('Some Chart');
+      expect(customChartMenuItem()).toHaveData('tooltip', 'Some tooltip');
     });
     
     it ("appends its menu items to the DOM if the DOM is updated", function() {

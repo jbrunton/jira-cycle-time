@@ -9,7 +9,8 @@ describe('ChartMenuItem', function() {
       report: {
         title: 'Some Title'
       },
-      menuItemId: 'some-id'
+      menuItemId: 'some-id',
+      tooltip: 'Some tooltip'
     };
   });
   
@@ -32,6 +33,13 @@ describe('ChartMenuItem', function() {
         var opts = _.omit(validOpts, 'menuItemId');
         new ChartMenuItem(opts);
       }).toThrow(Validator.messages.requires('opts.menuItemId'));
+    });
+    
+    it ("requires a tooltip", function() {
+      expect(function() {
+        var opts = _.omit(validOpts, 'tooltip');
+        new ChartMenuItem(opts);
+      }).toThrow(Validator.messages.requires('opts.tooltip'));
     });
     
     it ("initializes a chart", function() {

@@ -18,10 +18,12 @@ $(function() {
     menuItems: [
       new ChartMenuItem({
         menuItemId: 'epic-cycle-time',
+        tooltip: 'View epics by size and historic cycle time trends',
         report: new EpicReport(jiraClient)
       }),
       new ChartMenuItem({
         menuItemId: 'forecast-report',
+        tooltip: 'Forecast future themes based on historic cycle time data',
         report: new ForecastReport(jiraClient)
       })
     ]
