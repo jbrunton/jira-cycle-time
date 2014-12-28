@@ -42,6 +42,7 @@ FilterWidget.prototype.bind = function(dom) {
     this._widget.find('#forecast-exclusion-filter').val(cookie.excludedKeys);
     this._widget.find('#forecast-sample-start-date').val(cookie.sampleStartDate);
     this._widget.find('#forecast-sample-end-date').val(cookie.sampleEndDate);
+    this._refreshFilter();
   }
   
   $(dom).find('input').blur(blur);

@@ -52,6 +52,12 @@ describe ('FilterWidget', function() {
       expect(dom.find('input#forecast-sample-end-date').val()).toBe('1 Sep 2014');
     });
     
+    it ("initializes the filter according to the filter cookie", function() {
+      $.cookie.and.returnValue({ excludedKeys: 'DEMO-101' });
+      filter.bind(dom);
+      expect(filter.includeEpic({ key: 'DEMO-101' })).toBe(false);
+    });
+    
     it ("calls the blur function and saves the filter when the blur event fires on the filter input", function() {
       filter.bind(dom);
 
