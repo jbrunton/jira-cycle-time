@@ -1,6 +1,10 @@
+var moment = require('moment');
+
 var EpicReport = require('../../scripts/reports/epic_report');
+var FilterWidget = require('../../scripts/ui/filter_widget');
 var JiraClient = require('../../scripts/jira/jira_client'); // TODO: factory this
 var Validator = require('../../scripts/shared/validator');
+require('../../scripts/ui/helpers/epic_list_helper');
 
 describe ('EpicReport', function() {
   
@@ -23,14 +27,44 @@ describe ('EpicReport', function() {
   });
   
   describe ('render', function() {
-    xit ("renders a list of issues", function(done) {
-      var expectedEpics = [{ key: 'DEMO-101' }];
-      spyOn(jiraClient, 'getEpics').and.returnValue(Q(expectedEpics));
-
+    var epic;
+    
+    beforeEach(function() {
+      epic = {
+        key: 'DEMO-101',
+        completedDate: moment('1 Jun 2014')
+      };
+      spyOn(report, 'loadEpics').and.returnValue(Q([epic]));
+    });
+    
+    it ("renders a list of issues", function(done) {
       report.render(dom).then(function() {      
-        expect(dom).toContainText('DEMO-101');
+        expect(dom.find('#epic-list-holder')).toContainText(epic.key);
         done();
       });
+    });
+    
+    it ("adds a filter widget", function(done) {
+      report.render(dom).then(function() {      
+        expect(dom).toContainElement('#filter-holder .filter-widget');
+        done();
+      });
+    });
+    
+    it ("filters the epics by the exclusion filter", function(done) {
+      report.render(dom).then(function() {
+        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epic.key).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epic.key);
+        done();
+      });      
+    });
+
+    it ("filters the epics by the date completed", function(done) {
+      report.render(dom).then(function() {
+        dom.find('#' + FilterWidget.SAMPLE_START_DATE_ID).val(epic.completedDate.clone().add(1, 'day')).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epic.summary);
+        done();
+      });      
     });
   });
 });
