@@ -5,7 +5,6 @@ var moment = require('moment');
 
 var Class = require('../shared/class');
 var BaseReport = require('./base_report');
-var TimeChart = require('../ui/time_chart');
 var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
 var computeWipSeries = require('../transforms/compute_wip_series');
 var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
@@ -30,6 +29,8 @@ ForecastReport.prototype.render = function(target) {
     var content = forecastReportTemplate();
     $(target).append(content);
     
+    var wipData = computeWipSeries(epics);
+    
     var drawChart = _.bind(function() {
       var includedEpics = _(epics).filter(filter.includeEpic).value();
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
@@ -37,22 +38,6 @@ ForecastReport.prototype.render = function(target) {
       var sampleCycleTimeData = _(cycleTimeData).filter(filter.includeDatedItem).value();
       var sampleWipData = _(wipData).filter(filter.includeDatedItem).value();
       
-      var timeChart = new TimeChart();
-      timeChart.addSeries({
-        key: 'cycle_time',
-        color: 'red',
-        circle: true,
-        axisOrientation: 'left',
-        data: sampleCycleTimeData  
-      });
-      timeChart.addSeries({
-        key: 'wip',
-        color: 'blue',
-        axisOrientation: 'right',
-        data: sampleWipData
-      });
-      timeChart.draw($(target).find('#time-chart').empty().get(0));      
-    
       var backlogSize = {
         'S': Number(backlogSizeSmallInput.val()),
         'M': Number(backlogSizeMediumInput.val()),
@@ -79,8 +64,6 @@ ForecastReport.prototype.render = function(target) {
       blur: drawChart
     });
     filter.bind($(target).find('#forecast-filter'));
-    
-    var wipData = computeWipSeries(epics);
     
     var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
     var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
