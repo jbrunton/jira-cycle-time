@@ -30,6 +30,8 @@ ForecastReport.prototype.render = function(target) {
     var content = forecastReportTemplate();
     $(target).append(content);
     
+    var wipData = computeWipSeries(epics);
+    
     var drawChart = _.bind(function() {
       var includedEpics = _(epics).filter(filter.includeEpic).value();
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
@@ -79,8 +81,6 @@ ForecastReport.prototype.render = function(target) {
       blur: drawChart
     });
     filter.bind($(target).find('#forecast-filter'));
-    
-    var wipData = computeWipSeries(epics);
     
     var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
     var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
