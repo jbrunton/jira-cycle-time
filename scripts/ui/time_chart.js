@@ -49,13 +49,13 @@ TimeChart.prototype.getXDomain = function() {
       .max(momentEpoch)
       .value();
       
-    // this may happen if all the series are empty
     if (moment(startDate).isValid() && moment(endDate).isValid()) {
       this._xDomain = [
         startDate.clone().add('days', -1),
         endDate.clone().add('days', 1)
       ];
     } else {
+      // this may happen if all the series are empty
       this._xDomain = [
         moment().add('days', -1),
         moment().add('days', 1)
