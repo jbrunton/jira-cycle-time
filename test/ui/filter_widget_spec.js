@@ -145,6 +145,36 @@ describe ('FilterWidget', function() {
     });    
   });
   
+  describe ("filter shortcuts", function() {
+    beforeEach(function() {
+      filter.bind(dom);      
+    });
+    
+    it ("set sample start date to last 2 months", function() {
+      filterShortcut(2).click();
+      var expectedSampleStart = moment().subtract(2, 'months').format('D MMM YYYY');
+      expect(sampleStartDateInput().val()).toBe(expectedSampleStart);
+    });
+    
+    it ("set sample start date to last 4 months", function() {
+      filterShortcut(4).click();
+      var expectedSampleStart = moment().subtract(4, 'months').format('D MMM YYYY');
+      expect(sampleStartDateInput().val()).toBe(expectedSampleStart);
+    });
+    
+    it ("set sample start date to last 6 months", function() {
+      filterShortcut(6).click();
+      var expectedSampleStart = moment().subtract(6, 'months').format('D MMM YYYY');
+      expect(sampleStartDateInput().val()).toBe(expectedSampleStart);
+    });
+    
+    it ("clears the sample end date", function() {
+      sampleEndDateInput().val('1 Jun 2014');
+      filterShortcut(2).click();
+      expect(sampleEndDateInput().val()).toBe('');
+    });
+  });
+  
   function exclusionFilterInput() {
     return dom.find('input#' + FilterWidget.EXCLUSION_FILTER_ID);
   }
@@ -155,5 +185,9 @@ describe ('FilterWidget', function() {
   
   function sampleEndDateInput() {
     return dom.find('input#' + FilterWidget.SAMPLE_END_DATE_ID);
+  }
+  
+  function filterShortcut(months) {
+    return dom.find('button#filter-last-' + months + '-months');
   }
 });
