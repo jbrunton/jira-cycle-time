@@ -93,7 +93,7 @@ describe ('Epic', function() {
     });
     
     it ("doesn't assign a completed date if the epic is incomplete in Greenhopper", function(done) {
-      epic.fields.customfield_10002.value = "To Do";
+      epic._json.fields.customfield_10002.value = "To Do";
       jiraClient.search.and.returnValue(Q([issue]));
       epic.load().then(function() {
         expect(epic.completedDate).toBeNull();
