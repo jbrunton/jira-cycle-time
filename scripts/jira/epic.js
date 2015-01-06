@@ -16,7 +16,7 @@ function Epic(jiraClient, json) {
 
 Epic.prototype.load = function() {
   var updateStatus = this.jiraClient.getEpicStatusFieldId().then(_.bind(function(fieldId) {
-    this.status = this._json.fields['customfield_' + fieldId];
+    this.status = this._json.fields['customfield_' + fieldId].value;
     return Q(this);
   }, this));
   
@@ -25,6 +25,7 @@ Epic.prototype.load = function() {
     this.startedDate = this.computeStartedDate();
     this.completedDate = this.computeCompletedDate();
     this.cycleTime = this.computeCycleTime('days');
+    return Q(this);
   }, this);
   
   var searchForIssues = this.jiraClient.getEpicLinkFieldId().then(_.bind(function(epicLinkId) {
