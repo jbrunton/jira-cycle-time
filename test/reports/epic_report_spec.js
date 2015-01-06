@@ -27,19 +27,25 @@ describe ('EpicReport', function() {
   });
   
   describe ('render', function() {
-    var epic;
+    var epicOne, epicTwo;
     
     beforeEach(function() {
-      epic = {
+      epicOne = {
         key: 'DEMO-101',
-        completedDate: moment('1 Jun 2014')
+        completedDate: moment('1 Jun 2014'),
+        cycleTime: 1
       };
-      spyOn(report, 'loadEpics').and.returnValue(Q([epic]));
+      epicTwo = {
+        key: 'DEMO-102',
+        completedDate: moment('1 Jul 2014'),
+        cycleTime: 2
+      };
+      spyOn(report, 'loadEpics').and.returnValue(Q([epicOne, epicTwo]));
     });
     
     it ("renders a list of issues", function(done) {
       report.render(dom).then(function() {      
-        expect(dom.find('#epics-by-size-holder')).toContainText(epic.key);
+        expect(dom.find('#epics-by-size-holder')).toContainText(epicOne.key);
         done();
       });
     });
@@ -53,18 +59,33 @@ describe ('EpicReport', function() {
     
     it ("filters the epics by the exclusion filter", function(done) {
       report.render(dom).then(function() {
-        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epic.key).blur();
-        expect(dom.find('#epic-list-holder')).not.toContainText(epic.key);
+        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epicOne.key).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epicOne.key);
         done();
       });      
     });
 
     it ("filters the epics by the date completed", function(done) {
       report.render(dom).then(function() {
-        dom.find('#' + FilterWidget.SAMPLE_START_DATE_ID).val(epic.completedDate.clone().add(1, 'day')).blur();
-        expect(dom.find('#epic-list-holder')).not.toContainText(epic.summary);
+        dom.find('#' + FilterWidget.SAMPLE_START_DATE_ID).val(epicOne.completedDate.clone().add(1, 'day')).blur();
+        expect(dom.find('#epic-list-holder')).not.toContainText(epicOne.summary);
         done();
       });      
+    });
+    
+    it ("displays the mean cycle time", function(done) {
+      report.render(dom).then(function() {
+        expect(dom.find('#mean-cycle-time').text()).toBe('1.5');
+        done();
+      });
+    });
+    
+    it ("excludes fitlered epics from cycle time calculations", function(done) {
+      report.render(dom).then(function() {
+        dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epicOne.key).blur();
+        expect(dom.find('#mean-cycle-time').text()).toBe('2');
+        done();
+      });
     });
   });
 });

@@ -46,6 +46,11 @@ EpicReport.prototype.render = function(target) {
       var sampleCycleTimeData = _(cycleTimeData).filter(filter.includeDatedItem).value();
       var sampleWipData = _(wipData).filter(filter.includeDatedItem).value();
       
+      var meanCycleTime = _(sampleCycleTimeData).reduce(function(sum, item) {
+        return sum + item.value;
+      }, 0) / sampleCycleTimeData.length;
+      $(target).find('#mean-cycle-time').text(meanCycleTime.toFixed(2));
+      
       var timeChart = new TimeChart();
       timeChart.addSeries({
         key: 'cycle_time',
