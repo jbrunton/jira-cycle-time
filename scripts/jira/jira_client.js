@@ -55,13 +55,16 @@ JiraClient.prototype.search = function(opts) {
 // }
 
 JiraClient.prototype.getFields = function() {
-  return Q(
-    $.ajax({
-      type: 'GET',
-      url: this.domain + '/rest/api/2/field',
-      contentType: 'application/json'
-    })
-  );
+  if (!this._getFieldsPromise) {
+    this._getFieldsPromise = Q(
+      $.ajax({
+        type: 'GET',
+        url: this.domain + '/rest/api/2/field',
+        contentType: 'application/json'
+      })
+    );    
+  }
+  return this._getFieldsPromise;
 };
 
 JiraClient.prototype.getEpicLinkFieldId = function() {

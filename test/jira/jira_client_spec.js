@@ -138,6 +138,11 @@ describe ('JiraClient', function() {
       expect(request.url).toBe(domain + '/rest/api/2/field');      
     });
     
+    it ("caches the response", function() {
+      client.getFields();
+      expect(jasmine.Ajax.requests.count()).toBe(1);
+    });
+    
     it ("returns the fields in the response", function(done) {
       var expectedId = 10010;
       var expectedName = 'Epic Link';
