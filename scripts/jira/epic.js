@@ -10,10 +10,16 @@ Class(Epic).extends(Issue);
 
 function Epic(jiraClient, json) {
   this.jiraClient = jiraClient;
+  this._json = json;
   Issue.call(this, json);
 }
 
 Epic.prototype.load = function() {
+  var updateStatus = this.jiraClient.getEpicStatusFieldId().then(_.bind(function(fieldId) {
+    this.status = this._json.fields['customfield_' + fieldId].value;
+    return Q(this);
+  }, this));
+  
   var assignIssues = _.bind(function(issues) {
     this.issues = issues;
     this.startedDate = this.computeStartedDate();
@@ -22,17 +28,18 @@ Epic.prototype.load = function() {
     return Q(this);
   }, this);
   
-  var searchForIssues = _.bind(function(epicLinkId) {
+  var searchForIssues = this.jiraClient.getEpicLinkFieldId().then(_.bind(function(epicLinkId) {
     var searchOpts = {
       query: 'cf[' + epicLinkId + ']=' + this.key,
       expand: ['changelog']
     };
     return this.jiraClient.search(searchOpts);
-  }, this);
+  }, this));
   
-  return this.jiraClient.getEpicLinkFieldId()
-    .then(searchForIssues)
-    .then(assignIssues)
+  return updateStatus
+    .then(function() {
+      return searchForIssues.then(assignIssues);
+    });
 };
 
 Epic.prototype.computeStartedDate = function() {
@@ -56,6 +63,9 @@ Epic.prototype.computeStartedDate = function() {
 };
 
 Epic.prototype.computeCompletedDate = function() {
+  if (this.status != "Done") {
+    return null;
+  }
   var completedDates = _(this.issues)
     .map(function(issue) {
       return issue.completedDate;

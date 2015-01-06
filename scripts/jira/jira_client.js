@@ -55,13 +55,16 @@ JiraClient.prototype.search = function(opts) {
 // }
 
 JiraClient.prototype.getFields = function() {
-  return Q(
-    $.ajax({
-      type: 'GET',
-      url: this.domain + '/rest/api/2/field',
-      contentType: 'application/json'
-    })
-  );
+  if (!this._getFieldsPromise) {
+    this._getFieldsPromise = Q(
+      $.ajax({
+        type: 'GET',
+        url: this.domain + '/rest/api/2/field',
+        contentType: 'application/json'
+      })
+    );    
+  }
+  return this._getFieldsPromise;
 };
 
 JiraClient.prototype.getEpicLinkFieldId = function() {
@@ -69,6 +72,18 @@ JiraClient.prototype.getEpicLinkFieldId = function() {
     .then(function(fields) {
       return _(fields).find(function(field) {
         return field.name == 'Epic Link';
+      });
+    })
+    .then(function(field) {
+      return field.schema.customId;
+    });
+};
+
+JiraClient.prototype.getEpicStatusFieldId = function() {
+  return this.getFields()
+    .then(function(fields) {
+      return _(fields).find(function(field) {
+        return field.name == 'Epic Status';
       });
     })
     .then(function(field) {

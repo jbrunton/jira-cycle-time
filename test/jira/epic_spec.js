@@ -14,9 +14,14 @@ describe ('Epic', function() {
     epic = new Epic(jiraClient, {
       key: 'DEMO-101',
       fields: {
-        summary: 'Some Epic'
+        summary: 'Some Epic',
+        customfield_10002: {
+          value: "Done"
+        }
       }
     });
+    spyOn(jiraClient, 'getEpicLinkFieldId').and.returnValue(Q(10001));
+    spyOn(jiraClient, 'getEpicStatusFieldId').and.returnValue(Q(10002));
   });
   
   describe ('#load', function() {
@@ -52,7 +57,6 @@ describe ('Epic', function() {
         }
       });
       spyOn(jiraClient, 'search').and.returnValue(Q([issue]));
-      spyOn(jiraClient, 'getEpicLinkFieldId').and.returnValue(Q(10001));
       promise = epic.load();
       request = jasmine.Ajax.requests.mostRecent();
     });
@@ -86,6 +90,15 @@ describe ('Epic', function() {
         expect(epic.startedDate).toBeSameTimeAs(expectedStartedDate);
         expect(epic.completedDate).toBeSameTimeAs(expectedCompletedDate);
       })
+    });
+    
+    it ("doesn't assign a completed date if the epic is incomplete in Greenhopper", function(done) {
+      epic._json.fields.customfield_10002.value = "To Do";
+      jiraClient.search.and.returnValue(Q([issue]));
+      epic.load().then(function() {
+        expect(epic.completedDate).toBeNull();
+        done();
+      });      
     });
   });
 });
