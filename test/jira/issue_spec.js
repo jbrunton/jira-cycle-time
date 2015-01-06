@@ -50,7 +50,7 @@ describe ('Issue', function() {
           }
         ]
       }
-    })
+    });
   });
   
   describe ('constructor', function() {
@@ -67,6 +67,47 @@ describe ('Issue', function() {
     it ("calculates the completed date", function() {
       var expectedDate = moment("2014-01-04T12:30:00.000+0100");
       expect(issue.completedDate).toBeSameTimeAs(expectedDate);
+    });
+    
+    it ("sets the completed date to null if the task isn't completed", function() {
+      issue = new Issue({
+        key: 'DEMO-101',
+        fields: {
+          summary: 'Some Issue'
+        },
+        changelog: {
+          histories: [
+            {
+              created: "2014-01-01T12:30:00.000+0100",
+              items: [
+                {
+                  field: "status",
+                  toString: "In Progress"
+                }
+              ]
+            },
+            {
+              created: "2014-01-02T12:30:00.000+0100",
+              items: [
+                {
+                  field: "status",
+                  toString: "Done"
+                }
+              ]
+            },
+            {
+              created: "2014-01-03T12:30:00.000+0100",
+              items: [
+                {
+                  field: "status",
+                  toString: "In Progress"
+                }
+              ]
+            }
+          ]
+        }
+      });
+      expect(issue.completedDate).toBeNull();
     });
   });
 });

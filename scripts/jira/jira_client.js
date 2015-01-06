@@ -76,6 +76,18 @@ JiraClient.prototype.getEpicLinkFieldId = function() {
     });
 };
 
+JiraClient.prototype.getEpicStatusFieldId = function() {
+  return this.getFields()
+    .then(function(fields) {
+      return _(fields).find(function(field) {
+        return field.name == 'Epic Status';
+      });
+    })
+    .then(function(field) {
+      return field.schema.customId;
+    });
+};
+
 JiraClient.prototype.getRapidViews = function() {
   var createRapidView = _.bind(function(json) {
     return new RapidView(this, json);

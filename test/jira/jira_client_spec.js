@@ -190,6 +190,34 @@ describe ('JiraClient', function() {
     });
   });
   
+  describe ('#getEpicStatusFieldId', function() {
+    it ("returns a promise for the Epic Status custom field id", function(done) {
+      spyOn(client, 'getFields').and.returnValue(Q([
+        {
+          id: "customfield_10001",
+          name: 'Some Field',
+          custom: true,
+          schema: {
+            customId: 10001
+          }
+        },
+        {
+          id: "customfield_10020",
+          name: 'Epic Status',
+          custom: true,
+          schema: {
+            customId: 10020
+          }
+        }
+      ]));
+      
+      client.getEpicStatusFieldId().then(function(id) {
+        expect(id).toBe(10020);
+        done();
+      });
+    });
+  });
+  
   describe ('#getRapidViews', function() {
     var promise, request;
     
