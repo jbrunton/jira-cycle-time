@@ -26,7 +26,7 @@ FilterWidget.SAMPLE_START_DATE_ID = 'forecast-sample-start-date';
 FilterWidget.SAMPLE_END_DATE_ID = 'forecast-sample-end-date';
 
 FilterWidget.prototype.bind = function(dom) {
-  var blur = _.bind(function(e) {
+  var filterChanged = _.bind(function(e) {
     this._refreshFilter();
     this._saveFilterCookie();
     this._blurCallback();
@@ -35,7 +35,16 @@ FilterWidget.prototype.bind = function(dom) {
   this._inflateLayout(dom);
   this._readFilterCookie();
   
-  $(dom).find('input').blur(blur);
+  $(dom).find('input').blur(filterChanged);
+  
+  var filterShortcutApplied = _.bind(function(e) {
+    var monthsOffset = $(e.target).data('months');
+    var sampleStart = moment().subtract(monthsOffset, 'months');
+    this._sampleEndDateInput.val('');
+    this._sampleStartDateInput.val(sampleStart.format('D MMM YYYY')).blur();
+  }, this);
+
+  $(dom).find('button.filter-shortcut').click(filterShortcutApplied);
 }
 
 FilterWidget.prototype.includeEpic = function(epic) {
