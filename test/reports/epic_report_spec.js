@@ -39,7 +39,7 @@ describe ('EpicReport', function() {
     
     it ("renders a list of issues", function(done) {
       report.render(dom).then(function() {      
-        expect(dom.find('#epic-list-holder')).toContainText(epic.key);
+        expect(dom.find('#epics-by-size-holder')).toContainText(epic.key);
         done();
       });
     });
