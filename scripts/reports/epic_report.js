@@ -8,7 +8,9 @@ var FilterWidget = require('../ui/filter_widget');
 var TimeChart = require('../ui/time_chart');
 var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
 var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
+var stdDev = require('../transforms/std_dev');
 var computeWipSeries = require('../transforms/compute_wip_series');
+var epicsBySizeTemplate = require('./templates/epics_by_size.hbs');
 var epicReportTemplate = require('./templates/epic_report.hbs');
 
 module.exports = EpicReport;
@@ -24,7 +26,7 @@ function EpicReport(jiraClient) {
 
 EpicReport.prototype.render = function(target) {
   function renderReport(epics) {
-    $(target).html("<div id='filter-holder'></div><div id='cycle-time-chart-holder'></div><div id='epic-list-holder'></div>");
+    $(target).html(epicReportTemplate());
     
     var wipData = computeWipSeries(epics);
   
@@ -36,14 +38,24 @@ EpicReport.prototype.render = function(target) {
           return x.epic;
         });
       });
-      $(target).find('#epic-list-holder').html(
-        epicReportTemplate(epicsBySize)
+      $(target).find('#epics-by-size-holder').html(
+        epicsBySizeTemplate(epicsBySize)
       );
       
       var cycleTimeData = computeCycleTimeSeries(includedEpics);
       
       var sampleCycleTimeData = _(cycleTimeData).filter(filter.includeDatedItem).value();
       var sampleWipData = _(wipData).filter(filter.includeDatedItem).value();
+      
+      var meanCycleTime = _(sampleCycleTimeData).reduce(function(sum, item) {
+        return sum + item.value;
+      }, 0) / sampleCycleTimeData.length;
+      $(target).find('#mean-cycle-time').text(meanCycleTime.toFixed(2));
+      
+      var stddev = stdDev(sampleCycleTimeData.map(function(item) {
+        return item.value;
+      }));
+      $(target).find('#cycle-time-stddev').text(stddev.toFixed(2));
       
       var timeChart = new TimeChart();
       timeChart.addSeries({
