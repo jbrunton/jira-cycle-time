@@ -75,7 +75,14 @@ describe ('EpicReport', function() {
     
     it ("displays the mean cycle time", function(done) {
       report.render(dom).then(function() {
-        expect(dom.find('#mean-cycle-time').text()).toBe('1.5');
+        expect(dom.find('#mean-cycle-time').text()).toBe('1.50');
+        done();
+      });
+    });
+    
+    it ("displays the cycle time std dev", function(done) {
+      report.render(dom).then(function() {
+        expect(dom.find('#cycle-time-stddev').text()).toBe('0.50');
         done();
       });
     });
@@ -83,7 +90,7 @@ describe ('EpicReport', function() {
     it ("excludes fitlered epics from cycle time calculations", function(done) {
       report.render(dom).then(function() {
         dom.find('#' + FilterWidget.EXCLUSION_FILTER_ID).val(epicOne.key).blur();
-        expect(dom.find('#mean-cycle-time').text()).toBe('2');
+        expect(dom.find('#mean-cycle-time').text()).toBe('2.00');
         done();
       });
     });

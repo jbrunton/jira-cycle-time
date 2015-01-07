@@ -8,6 +8,7 @@ var FilterWidget = require('../ui/filter_widget');
 var TimeChart = require('../ui/time_chart');
 var computeCycleTimeSeries = require('../transforms/compute_cycle_time_series');
 var categorizeCycleTimeData = require('../transforms/categorize_cycle_time_data');
+var stdDev = require('../transforms/std_dev');
 var computeWipSeries = require('../transforms/compute_wip_series');
 var epicsBySizeTemplate = require('./templates/epics_by_size.hbs');
 var epicReportTemplate = require('./templates/epic_report.hbs');
@@ -50,6 +51,11 @@ EpicReport.prototype.render = function(target) {
         return sum + item.value;
       }, 0) / sampleCycleTimeData.length;
       $(target).find('#mean-cycle-time').text(meanCycleTime.toFixed(2));
+      
+      var stddev = stdDev(sampleCycleTimeData.map(function(item) {
+        return item.value;
+      }));
+      $(target).find('#cycle-time-stddev').text(stddev.toFixed(2));
       
       var timeChart = new TimeChart();
       timeChart.addSeries({
