@@ -6,3 +6,10 @@ Handlebars.registerHelper('date', function(date) {
     return new Handlebars.SafeString(dateString);
   }
 });
+
+Handlebars.registerHelper('short_date', function(date) {
+  if (date) {
+    var dateString = Handlebars.Utils.escapeExpression(date.format('MMMM Do YYYY'));
+    return new Handlebars.SafeString(dateString);
+  }
+});

@@ -38,6 +38,8 @@ ForecastReport.prototype.render = function(target) {
       var sampleCycleTimeData = _(cycleTimeData).filter(filter.includeDatedItem).value();
       var sampleWipData = _(wipData).filter(filter.includeDatedItem).value();
       
+      var startDate = moment(startDateInput.val());
+      
       var backlogSize = {
         'S': Number(backlogSizeSmallInput.val()),
         'M': Number(backlogSizeMediumInput.val()),
@@ -54,7 +56,15 @@ ForecastReport.prototype.render = function(target) {
           backlogSize: backlogSize,
           cycleTimeData: categorizedCycleTimeData,
           workInProgressData: sampleWipData
-        });        
+        });
+
+        if (startDate.isValid()) {
+          _(forecastResult.forecasts).each(function(forecast) {
+            forecast.delivery = startDate.clone().add(forecast.actualTime, 'days');
+          });
+          
+        }
+
         var forecastTemplate = require('./templates/forecast_output.hbs');
         forecastSection.html(forecastTemplate(forecastResult));
       }      
@@ -68,10 +78,12 @@ ForecastReport.prototype.render = function(target) {
     var backlogSizeSmallInput = $(target).find('#forecast-backlog-size-small');    
     var backlogSizeMediumInput = $(target).find('#forecast-backlog-size-medium');    
     var backlogSizeLargeInput = $(target).find('#forecast-backlog-size-large');    
+    var startDateInput = $(target).find('#forecast-start-date');
     
     backlogSizeSmallInput.blur(drawChart);
     backlogSizeMediumInput.blur(drawChart);
     backlogSizeLargeInput.blur(drawChart);
+    startDateInput.blur(drawChart);
     
     drawChart();
   }, this);

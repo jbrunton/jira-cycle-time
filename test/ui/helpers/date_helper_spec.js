@@ -2,6 +2,7 @@ var moment = require('moment');
 
 require('../../../scripts/ui/helpers/date_helper');
 var dateTemplate = require('./templates/date.hbs');
+var shortDateTemplate = require('./templates/short_date.hbs');
 
 describe ('Handlebars Helpers', function() {  
   describe ('date', function() {
@@ -9,6 +10,14 @@ describe ('Handlebars Helpers', function() {
       var exampleDate = moment('2014-07-04T14:15:00');
       var output = dateTemplate({date: exampleDate});
       expect(output).toBe('July 4th 2014, 2:15:00 pm');
+    });
+  });
+  
+  describe ('short_date', function() {
+    it ("formats dates", function() {
+      var exampleDate = moment('2014-07-04T14:15:00');
+      var output = shortDateTemplate({date: exampleDate});
+      expect(output).toBe('July 4th 2014');
     });
   });
 });

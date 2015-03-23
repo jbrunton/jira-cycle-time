@@ -3,12 +3,14 @@
   <tr>
     <th>Actual Time</th>
     <th>% Confidence</th>
+    <th>Delivery</th>
   </tr>
   
   {{#each forecasts}}
     <tr>
       <td>{{duration actualTime 'weeks'}}</td>
       <td>{{likelihood}} %</td>
+      <td>{{short_date delivery}}</td>
     </tr>
   {{/each}}
 
