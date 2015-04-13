@@ -35,10 +35,10 @@ ChartMenu.prototype.bind = function(target) {
 ChartMenu.prototype._appendMenuItems = function() {
   this._removeListeners();
   _.each(this.menuItems, this._appendMenuItem);
-  var menuItemSelector = '#ghx-chart-nav li';
+  var menuItemSelector = '#subnav-opts-report .subnav-section li';
   var menuItems = $(this._target).find(menuItemSelector);
   // menuItems.click(menuItemClickHandler);
-  findChartNav(this._target).append(menuItems);
+  // findChartNav(this._target).append(menuItems);
   this._addListeners();
 }
 
@@ -82,23 +82,27 @@ ChartMenu.prototype._inflateMenuItems = function() {
 
 function clickHandlerFor(chart) {
   return function() {
-    $(this).closest('#ghx-chart-nav').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
-    $(this).addClass(ChartMenu.SELECTED_CLASS);
-  
-    var report = $(this).closest('#ghx-report');
-    report.find('#ghx-chart-message').empty();
-    report.find('#ghx-chart-intro').empty();
-    report.find('#ghx-chart-selector').empty();
-    report.find('#ghx-chart-snapshot').empty();
-    report.find('#ghx-chart-content').empty();
-    report.find('#ghx-chart-header-secondary').hide();
+    //$(this).closest('#subnav-opts-report').find('li.' + ChartMenu.SELECTED_CLASS).removeClass(ChartMenu.SELECTED_CLASS);
+    //$(this).addClass(ChartMenu.SELECTED_CLASS);
     
-    var title = report.find('#ghx-chart-title h2');
-    title.text(chart.report.title);
-
-    var content = report.find('#ghx-chart-content');
+    $('body').find('#ghx-chart-panel-content').hide();
+    
+    var content = $('<div>Hey</div>').appendTo($('body').find('.aui-page-panel-inner'));
+  
+    // var report = $('body').find('#ghx-report');
+    // report.find('#ghx-chart-message').empty();
+    // report.find('#ghx-chart-intro').empty();
+    // report.find('#ghx-chart-selector').empty();
+    // report.find('#ghx-chart-snapshot').empty();
+    // report.find('#ghx-chart-content').empty();
+    // report.find('#ghx-chart-header-secondary').hide();
+    //
+    // var title = report.find('#ghx-chart-title h2');
+    // title.text(chart.report.title);
+    //
+    // var content = report.find('#ghx-chart-content');
     content.append("<p id='loading-indicator'></p>");
-
+    //
     chart.report.render(content.get(0));
   }
 }
@@ -108,7 +112,7 @@ function chartNavExists(target) {
 }
 
 function findChartNav(target) {
-  return $(target).find('#ghx-chart-nav');
+  return $(target).find('#subnav-opts-report .subnav-section:first');
 }
 
 function findViewModeButtons(target) {
