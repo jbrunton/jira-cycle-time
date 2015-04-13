@@ -87,7 +87,7 @@ function clickHandlerFor(chart) {
     
     $('body').find('#ghx-chart-panel-content').hide();
     
-    var content = $('<div>Hey</div>').appendTo($('body').find('.aui-page-panel-inner'));
+    var content = $('<div>').appendTo($('body').find('.aui-page-panel-inner'));
   
     // var report = $('body').find('#ghx-report');
     // report.find('#ghx-chart-message').empty();
